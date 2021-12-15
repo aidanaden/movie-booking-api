@@ -74,3 +74,11 @@ fi
 if [ -n "${BASH:-}" -o -n "${ZSH_VERSION:-}" ] ; then
     hash -r
 fi
+
+export SECRET_KEY='%cej*194gy@5!e&fr=v_i)3%35+3#x2+gk5%$h$kqfv9j31=%2'
+export DEBUG=True
+export ALLOWED_HOSTS='localhost, 128.199.142.207'
+export DB_ENGINE='django.db.backends.postgresql_psycopg2'
+export DB_NAME='moviesdb'
+export DB_USER='admin'
+export DB_PASSWORD='20W48v98'
