@@ -253,7 +253,7 @@ def scrapeCathay(driver, movies, tmdbUrl, params):
     
     return movies
 
-CHROMEDRIVER_PATH = '/usr/bin/chromedriver'
+CHROMEDRIVER_PATH = '/home/aidan/chromedriver'
 WINDOW_SIZE = "1920,1080"
 chrome_options = Options()
 chrome_options.add_argument("--headless")
