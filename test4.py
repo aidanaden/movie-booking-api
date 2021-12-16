@@ -34,5 +34,5 @@ movieFields = driver.find_elements(By.XPATH, "//div[contains(@class, 'info')]")
 for movieField in movieFields:
     movieInfo = movieField.find_element(By.TAG_NAME, 'a')
     movieName = movieInfo.text
-    movieUrl = f"https://www.shaw.sg/{movieInfo.get_attribute('href')}"
+    movieUrl = movieInfo.get_attribute('href')
     print(f'movie name: {movieName}\ncleaned movie name: {cleanTitle(movieName)}\nmovie url: {movieUrl}\n')

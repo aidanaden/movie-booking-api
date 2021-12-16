@@ -371,7 +371,7 @@ movies = scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params)
 
 print('creating movie object data...')
 for movie in movies:
-    movie['reviews'] = scrapeReviewsForMovie(movie['title'], driver)
+    movie['reviews'] = scrapeReviewsForMovie(movie['movie'], driver)
     Movie.objects.create(data=movie)
 
 print('closing driver...')
