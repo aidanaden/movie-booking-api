@@ -276,15 +276,20 @@ def scrapeReviewsForMovie(movieName, driver):
     driver.get(searchQueryUrl)
     driver.implicitly_wait(1)
 
-    movieUrl = driver.find_element(
-        By.TAG_NAME, 'search-page-result'
-    ).find_element(
-        By.TAG_NAME, 'ul'
-    ).find_element(
-        By.XPATH, "//search-page-result[contains(@type, 'movie')]"
-    ).find_element(
-        By.TAG_NAME, 'a'
-    ).get_attribute('href')
+    movieUrl = ''
+    try:
+        movieUrl = driver.find_element(
+            By.TAG_NAME, 'search-page-result'
+        ).find_element(
+            By.TAG_NAME, 'ul'
+        ).find_element(
+            By.XPATH, "//search-page-result[contains(@type, 'movie')]"
+        ).find_element(
+            By.TAG_NAME, 'a'
+        ).get_attribute('href')
+    except:
+        print('could not find reviews for movie')
+        return
 
     movieReviewsUrl = f'{movieUrl}/reviews'
     driver.get(movieReviewsUrl)
