@@ -27,7 +27,7 @@ def getNameFromUrl(url):
     name = ' '.join(splits[:-1])
     return name
 
-def getMovieFromId(movieId, apiKey):
+def getMovieFromId(movieId, tmdbUrl, apiKey):
     movieParams = {
         'api_key': apiKey,
         'append_to_response': 'videos'
@@ -169,7 +169,7 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
 
         if (len(searchResultInfo['results']) > 0):
             movieId = searchResultInfo['results'][0]['id']
-            movieInfo = getMovieFromId(movieId, params['api_key'])
+            movieInfo = getMovieFromId(movieId, tmdbUrl, params['api_key'])
 
             data = {
                 'movie': movieInfo['title'],
@@ -188,7 +188,7 @@ def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
     driver.get("https://www.cathaycineplexes.com.sg/movies")
 
     moviesContainerClass = 'boxes'
-    movieContainerField = WebDriverWait(driver, 30).until(
+    movieContainerField = WebDriverWait(driver, 5).until(
                             EC.presence_of_element_located((By.CLASS_NAME, moviesContainerClass)))
 
     movieUrlFields = movieContainerField.find_elements(By.TAG_NAME, 'a')
@@ -207,7 +207,7 @@ def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
 
         if len(searchResultInfo['results']) > 0:
             movieId = searchResultInfo['results'][0]['id']
-            movieInfo = getMovieFromId(movieId, params['api_key'])
+            movieInfo = getMovieFromId(movieId, tmdbUrl, params['api_key'])
             movieJSON = {
                 'info': movieInfo,
                 'movie': movieInfo['title'],
