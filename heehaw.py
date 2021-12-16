@@ -204,7 +204,7 @@ def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
 
         params['query'] = cleanedMovieName
         searchResultInfo = requests.get(tmdbSearchUrl, params=params).json()
-        
+
         if len(searchResultInfo['results']) > 0:
             movieId = searchResultInfo['results'][0]['id']
             movieInfo = getMovieFromId(movieId, params['api_key'])
@@ -264,6 +264,73 @@ def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
     
     return movies
 
+
+def scrapeReviewsForMovie(movieName, driver):
+    # create query param of movie name (replace spaces with %20)
+    queryMovieName = '%20'.join(movieName.split(' '))
+    searchQueryUrl = f"https://www.rottentomatoes.com/search?search={queryMovieName}"
+    driver.get(searchQueryUrl)
+    driver.implicitly_wait(1)
+
+    movieUrl = driver.find_element(
+        By.TAG_NAME, 'search-page-result'
+    ).find_element(
+        By.TAG_NAME, 'ul'
+    ).find_element(
+        By.XPATH, "//search-page-result[contains(@type, 'movie')]"
+    ).find_element(
+        By.TAG_NAME, 'a'
+    ).get_attribute('href')
+
+    movieReviewsUrl = f'{movieUrl}/reviews'
+    driver.get(movieReviewsUrl)
+    driver.implicitly_wait(1)
+
+    reviewDatas = []
+    reviewsTableFields = []
+    try:
+        reviewsTableFields = driver.find_element(
+            By.CLASS_NAME, 'review_table').find_elements(By.XPATH, './div')
+    except:
+        return
+
+    for reviewField in reviewsTableFields:
+        reviewData = {
+            'movie': movieName
+        }
+
+        criticFields = reviewField.find_element(By.XPATH, './div[1]')
+        criticImgUrl = criticFields.find_element(
+            By.TAG_NAME, 'img').get_attribute('src')
+        criticDetails = criticFields.find_elements(By.TAG_NAME, 'a')
+        # print(f'critic details: {[detail.text for detail in criticDetails]}')
+        criticName = criticDetails[0].text
+        criticUrl = criticDetails[0].get_attribute('href')
+        criticCompany = criticDetails[1].text
+        criticCompanyUrl = criticDetails[1].get_attribute('href')
+        reviewData['critic'] = {
+            'name': criticName,
+            'url': criticUrl,
+            'img': criticImgUrl,
+            'company': criticCompany,
+            'companyUrl': criticCompanyUrl
+        }
+
+        reviewFields = reviewField.find_element(By.XPATH, './div[2]').find_element(
+            By.CLASS_NAME, 'review_area').find_elements(By.XPATH, './div')
+        reviewDate = reviewFields[0].text
+        reviewText = reviewFields[1].find_element(By.XPATH, './div[1]').text
+        reviewUrl = reviewFields[1].find_element(
+            By.XPATH, './div[2]').find_element(By.TAG_NAME, 'a').get_attribute('href')
+        reviewData['review'] = {
+            'date': reviewDate,
+            'text': reviewText,
+            'url': reviewUrl
+        }
+        reviewDatas.append(reviewData)
+
+    print(reviewDatas)
+
 CHROMEDRIVER_PATH = '/home/aidan/chromedriver'
 WINDOW_SIZE = "1920,1080"
 chrome_options = Options()
@@ -293,6 +360,7 @@ movies = scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params)
 
 print('creating movie object data...')
 for movie in movies:
+    movie['reviews'] = scrapeReviewsForMovie(movie['title'], driver)
     Movie.objects.create(data=movie)
 
 print('closing driver...')
