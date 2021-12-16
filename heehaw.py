@@ -27,8 +27,15 @@ def getNameFromUrl(url):
     name = ' '.join(splits[:-1])
     return name
 
+def getMovieFromId(movieId, apiKey):
+    movieParams = {
+        'api_key': apiKey,
+        'append_to_response': 'videos'
+    }
+    return requests.get(f'{tmdbUrl}/{movieId}', params=movieParams).json()
+
 # SCRAPE GV
-def scrapeGV(driver, movies, tmdbApiKey, tmdbUrl):
+def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
     driver.get("https://www.gv.com.sg/GVMovies")
 
     movieFieldId = 'nowMovieThumb'
@@ -158,15 +165,17 @@ def scrapeGV(driver, movies, tmdbApiKey, tmdbUrl):
                 continue
         
         params['query'] = cleanedTitleText
-        movieInfo = requests.get(tmdbUrl, params=params).json()
+        searchResultInfo = requests.get(tmdbSearchUrl, params=params).json()
 
-        if (len(movieInfo['results']) > 0):
+        if (len(searchResultInfo['results']) > 0):
+            movieId = searchResultInfo['results'][0]['id']
+            movieInfo = getMovieFromId(movieId, params['api_key'])
+
             data = {
-                'movie': cleanedTitleText.strip(),
+                'movie': movieInfo['title'],
                 'cinemas': cinemas,
-                'info': movieInfo['results'][0]
+                'info': movieInfo
             }
-            # movies.append(Movie.objects.create(data=data))
             movies.append(data)
 
         driver.close()
@@ -175,7 +184,7 @@ def scrapeGV(driver, movies, tmdbApiKey, tmdbUrl):
     return movies
 
 # SCRAPE CATHAY 
-def scrapeCathay(driver, movies, tmdbUrl, params):
+def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
     driver.get("https://www.cathaycineplexes.com.sg/movies")
 
     moviesContainerClass = 'boxes'
@@ -194,12 +203,14 @@ def scrapeCathay(driver, movies, tmdbUrl, params):
         print(f'{cleanedMovieName}')
 
         params['query'] = cleanedMovieName
-        movieInfo = requests.get(tmdbUrl, params=params).json()
-        if len(movieInfo['results']) > 0:
-
+        searchResultInfo = requests.get(tmdbSearchUrl, params=params).json()
+        
+        if len(searchResultInfo['results']) > 0:
+            movieId = searchResultInfo['results'][0]['id']
+            movieInfo = getMovieFromId(movieId, params['api_key'])
             movieJSON = {
-                'info': movieInfo['results'][0],
-                'movie': movieInfo['results'][0]['title'],
+                'info': movieInfo,
+                'movie': movieInfo['title'],
                 'cinemas': []
             }
 
@@ -262,7 +273,8 @@ chrome_options.add_argument('--no-sandbox')
 driver = webdriver.Chrome(
     executable_path=CHROMEDRIVER_PATH, chrome_options=chrome_options)
 
-tmdbUrl = 'https://api.themoviedb.org/3/search/movie'
+tmdbUrl = 'https://api.themoviedb.org/3/movie'
+tmdbSearchUrl = 'https://api.themoviedb.org/3/search/movie'
 tmdbApiKey = '863e63572b437caf26335f1d1143e10c'
 
 params = {
@@ -275,8 +287,8 @@ params = {
 movies = []
 Movie.objects.all().delete()
 
-movies = scrapeGV(driver, movies, tmdbUrl, params)
-movies = scrapeCathay(driver, movies, tmdbUrl, params)
+movies = scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params)
+movies = scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params)
 # web-scrape cathay movies
 
 print('creating movie object data...')
