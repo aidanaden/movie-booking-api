@@ -81,12 +81,19 @@ def scrapeReviewsForMovie(movieName, driver):
         reviewDate = reviewFields[0].text
         reviewText = reviewFields[1].find_element(By.XPATH, './div[1]').text
         reviewUrl = reviewFields[1].find_element(By.XPATH, './div[2]').find_element(By.TAG_NAME, 'a').get_attribute('href')
-        reviewData['review'] = {
-            'date': reviewDate,
-            'text': reviewText,
-            'url': reviewUrl
-        }
-        reviewDatas.append(reviewData)
+        reviewRating = reviewFields[1].find_element(By.XPATH, './div[2]').text.strip().split(' ')[-1]
+
+        if '/' in reviewRating:
+            reviewData['review'] = {
+                'date': reviewDate,
+                'text': reviewText,
+                'rating': reviewRating,
+                'url': reviewUrl
+            }
+            reviewDatas.append(reviewData)
+        else:
+            print('review rating does not exist, skipping...')
+            continue
     
     return reviewDatas
 
