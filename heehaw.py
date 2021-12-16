@@ -62,6 +62,7 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
         # Switch to the newly opened tab
         driver.switch_to.window(driver.window_handles[1])
         driver.get(movieDetailsUrl)
+        driver.implicitly_wait(1)
 
         numCinemas = len(driver.find_element(
             By.CLASS_NAME, 'cinemas-body').find_element(By.TAG_NAME, 'ul').find_elements(By.TAG_NAME, 'li'))
@@ -69,7 +70,6 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
 
         for i in range(numCinemas):
             cinemaDates = []
-            driver.implicitly_wait(2)
             movieCinemas = driver.find_element(
                 By.CLASS_NAME, 'cinemas-body').find_element(By.TAG_NAME, 'ul').find_elements(By.TAG_NAME, 'li')
             print(f'new numCinemas: {len(movieCinemas)}')
@@ -218,7 +218,7 @@ def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
             # Switch to the newly opened tab
             driver.switch_to.window(driver.window_handles[1])
             driver.get(movieUrl)
-            driver.implicitly_wait(2)
+            driver.implicitly_wait(1)
 
             cinemaSectionFields = driver.find_element(By.XPATH, "//div[contains(@id, 'showtimes')]").find_elements(By.XPATH, "./div[contains(@id, 'ContentPlaceHolder1_wucST')]")
 
@@ -230,7 +230,6 @@ def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                 if cinemaSectionField.get_attribute('id') != 'ContentPlaceHolder1_wucSTPMS_tabs':
                     cinemaTimingList = []
                     cinemaTimings = cinemaSectionField.find_elements(By.CLASS_NAME, 'movie-timings')
-                    driver.implicitly_wait(1)
                     for cinemaTiming in cinemaTimings:
                         print(f'timing {cinemaTiming.text} found')
                         timingDatas = cinemaTiming.find_elements(By.TAG_NAME, 'a')
