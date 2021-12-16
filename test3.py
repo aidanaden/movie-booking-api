@@ -88,7 +88,7 @@ def scrapeReviewsForMovie(movieName, driver):
         }
         reviewDatas.append(reviewData)
     
-    print(reviewDatas)
+    return reviewDatas
 
 
 driver = webdriver.Chrome(
@@ -133,47 +133,55 @@ for o, movieUrl in enumerate(movieUrls):
         driver.get(movieUrl)
         driver.implicitly_wait(2)
 
-        cinemaSectionFields = driver.find_element(By.XPATH, "//div[contains(@id, 'showtimes')]").find_elements(By.XPATH, "./div[contains(@id, 'ContentPlaceHolder1_wucST')]")
+        cinemaSectionFields = []
+        try:
+            cinemaSectionFields = driver.find_element(By.XPATH, "//div[contains(@id, 'showtimes')]").find_elements(By.XPATH, "./div[contains(@id, 'ContentPlaceHolder1_wucST')]")
+        except:
+            print('no cinema timings for this movie, skipping...')
+            pass
         cinemaTimingsTotal = []
 
-        print(f'found {len(cinemaSectionFields)} cinemas!')
-
-        for i, (cinemaSectionField) in enumerate(cinemaSectionFields):
-            cinemaName = cinemaSectionField.find_element(By.XPATH, "./ul").find_element(By.XPATH, "./li[1]").text
-            print(f'=== {cinemaName} ===')
-            if cinemaSectionField.get_attribute('id') != 'ContentPlaceHolder1_wucSTPMS_tabs':
-                cinemaTimingList = []
-                cinemaTimings = cinemaSectionField.find_elements(By.CLASS_NAME, 'movie-timings')
-                driver.implicitly_wait(1)
-                for cinemaTiming in cinemaTimings:
-                    print(f'timing {cinemaTiming.text} found')
-                    timingDatas = cinemaTiming.find_elements(By.TAG_NAME, 'a')
-                    for timingData in timingDatas:
-                        timingTitleText = timingData.get_attribute('title')
-                        timingBookingUrl = timingData.get_attribute(
-                            'data-href-stop')
-                        if len(timingTitleText) > 0:
-                            timingData = {
-                                'timing': timingTitleText, 'url': timingBookingUrl}
-                            print(timingData)
-                            cinemaTimingList.append(timingData)
-                    
-                if len(cinemaTimingList) > 0:
-                    # cinemaTimingsTotal.append(cinemaTimingList)
-                    movieJSON['cinemas'].append({
-                        'cinema': f'Cathay {cinemaName}',
-                        'dates': cinemaTimingList
-                    })
-            else:
-                print('cinema is a platinum VIP suite, skip')
-                continue
-        
-        # print(movieJSON['cinemas'])
-        movieInfos.append(movieJSON)
+        if (len(cinemaSectionFields) > 0):
+            for i, (cinemaSectionField) in enumerate(cinemaSectionFields):
+                cinemaName = cinemaSectionField.find_element(By.XPATH, "./ul").find_element(By.XPATH, "./li[1]").text
+                print(f'=== {cinemaName} ===')
+                if cinemaSectionField.get_attribute('id') != 'ContentPlaceHolder1_wucSTPMS_tabs':
+                    cinemaTimingList = []
+                    cinemaTimings = cinemaSectionField.find_elements(By.CLASS_NAME, 'movie-timings')
+                    driver.implicitly_wait(1)
+                    for cinemaTiming in cinemaTimings:
+                        print(f'timing {cinemaTiming.text} found')
+                        timingDatas = cinemaTiming.find_elements(By.TAG_NAME, 'a')
+                        for timingData in timingDatas:
+                            timingTitleText = timingData.get_attribute('title')
+                            timingBookingUrl = timingData.get_attribute(
+                                'data-href-stop')
+                            if len(timingTitleText) > 0:
+                                timingData = {
+                                    'timing': timingTitleText, 'url': timingBookingUrl}
+                                print(timingData)
+                                cinemaTimingList.append(timingData)
+                        
+                    if len(cinemaTimingList) > 0:
+                        # cinemaTimingsTotal.append(cinemaTimingList)
+                        movieJSON['cinemas'].append({
+                            'cinema': f'Cathay {cinemaName}',
+                            'dates': cinemaTimingList
+                        })
+                else:
+                    print('cinema is a platinum VIP suite, skip')
+                    continue
+            
+            # print(movieJSON['cinemas'])
+            movieInfos.append(movieJSON)
 
 for movie in movieInfos:
     print(f"movie name: {movie['movie']}")
-    scrapeReviewsForMovie(movie['movie'], driver)
+    movie['reviews'] = scrapeReviewsForMovie(movie['movie'], driver)
+
+for movie in movieInfos:
+    print(movie)
+    print('')
 
 driver.quit()
 # print(movieInfos)
