@@ -400,9 +400,8 @@ params = {
 movies = []
 Movie.objects.all().delete()
 
-# movies = scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params)
+movies = scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params)
 movies = scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params)
-# web-scrape cathay movies
 
 print('creating movie object data...')
 for movie in movies:
