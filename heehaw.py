@@ -270,9 +270,12 @@ def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
 
 
 def scrapeReviewsForMovie(movieName, driver):
+    print(f'finding reviews for movie: {movieName}')
     # create query param of movie name (replace spaces with %20)
     queryMovieName = '%20'.join(movieName.split(' '))
     searchQueryUrl = f"https://www.rottentomatoes.com/search?search={queryMovieName}"
+    print(f'query movie name: {queryMovieName}')
+    print(f'search query url: {searchQueryUrl}')
     driver.get(searchQueryUrl)
     driver.implicitly_wait(1)
 
@@ -370,7 +373,7 @@ params = {
 movies = []
 Movie.objects.all().delete()
 
-movies = scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params)
+# movies = scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params)
 movies = scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params)
 # web-scrape cathay movies
 
