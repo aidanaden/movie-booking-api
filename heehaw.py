@@ -293,6 +293,7 @@ def scrapeReviewsForMovie(movieName, driver):
         ).find_element(
             By.TAG_NAME, 'a'
         ).get_attribute('href')
+        print(f'found movie url: {movieUrl}')
     except:
         print('could not find reviews for movie')
         return
