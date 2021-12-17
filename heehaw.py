@@ -276,6 +276,9 @@ def scrapeReviewsForMovie(movieName, driver):
     searchQueryUrl = f"https://www.rottentomatoes.com/search?search={queryMovieName}"
     print(f'query movie name: {queryMovieName}')
     print(f'search query url: {searchQueryUrl}')
+    driver.execute_script("window.open()")
+    # Switch to the newly opened tab
+    driver.switch_to.window(driver.window_handles[1])
     driver.get(searchQueryUrl)
     driver.implicitly_wait(1)
 
@@ -348,7 +351,10 @@ def scrapeReviewsForMovie(movieName, driver):
             print('review rating does not exist, skipping...')
             continue
 
-    return reviewDatas
+    driver.close()
+    driver.switch_to.window(driver.window_handles[0])
+
+    return (reviewDatas, driver)
 
 CHROMEDRIVER_PATH = '/home/aidan/chromedriver'
 WINDOW_SIZE = "1920,1080"
@@ -379,7 +385,8 @@ movies = scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params)
 
 print('creating movie object data...')
 for movie in movies:
-    movie['reviews'] = scrapeReviewsForMovie(movie['movie'], driver)
+    reviews, driver = scrapeReviewsForMovie(movie['movie'], driver)
+    movie['reviews'] = reviews
     Movie.objects.create(data=movie)
 
 print('closing driver...')
