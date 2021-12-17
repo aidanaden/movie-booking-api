@@ -381,19 +381,27 @@ def scrapeReviewsForMovie(movieName, driver):
 
     movieUrl = ''
     try:
-        movieUrl = driver.find_element(
+        searchResultMovieField = driver.find_element(
             By.TAG_NAME, 'search-page-result'
         ).find_element(
             By.TAG_NAME, 'ul'
         ).find_element(
             By.XPATH, "//search-page-result[contains(@type, 'movie')]"
-        ).find_element(
+        ).find_elements(
             By.TAG_NAME, 'a'
-        ).get_attribute('href')
+        )[-1]
+
+        movieUrl = searchResultMovieField.get_attribute('href')
+        searchResultMovieName = searchResultMovieField.text
+        
+        if movieName not in searchResultMovieName:
+            print('movie does not contain rotten tomato reviews, skipping...')
+            return []
+
         print(f'found movie url: {movieUrl}')
     except:
         print('could not find reviews for movie')
-        return
+        return []
 
     if movieUrl == '':
         print('could not find reviews for movie')
