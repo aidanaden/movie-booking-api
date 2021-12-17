@@ -435,45 +435,47 @@ def scrapeReviewsForMovie(movieName, driver):
                 'movie': movieName
             }
 
-            criticFields = reviewField.find_element(By.XPATH, './div[1]')
-            criticImgUrl = criticFields.find_element(
-                By.TAG_NAME, 'img').get_attribute('src')
-            criticDetails = criticFields.find_elements(By.TAG_NAME, 'a')
-            # print(f'critic details: {[detail.text for detail in criticDetails]}')
-            criticName = criticDetails[0].text
-            criticUrl = criticDetails[0].get_attribute('href')
-            criticCompany = criticDetails[1].text
-            criticCompanyUrl = criticDetails[1].get_attribute('href')
-            reviewData['critic'] = {
-                'name': criticName,
-                'url': criticUrl,
-                'img': criticImgUrl,
-                'company': criticCompany,
-                'companyUrl': criticCompanyUrl
-            }
-
-            reviewFields = reviewField.find_element(By.XPATH, './div[2]').find_element(
-                By.CLASS_NAME, 'review_area').find_elements(By.XPATH, './div')
-            reviewDate = reviewFields[0].text
-            reviewText = reviewFields[1].find_element(By.XPATH, './div[1]').text
-            reviewUrl = reviewFields[1].find_element(
-                By.XPATH, './div[2]').find_element(By.TAG_NAME, 'a').get_attribute('href')
-            reviewRating = reviewFields[1].find_element(By.XPATH, './div[2]').text.strip().split(' ')[-1]
-
-            if '/' in reviewRating:
-                reviewData['review'] = {
-                    'date': reviewDate,
-                    'text': reviewText,
-                    'rating': reviewRating,
-                    'url': reviewUrl
+            try:
+                criticFields = reviewField.find_element(By.XPATH, './div[1]')
+                criticImgUrl = criticFields.find_element(
+                    By.TAG_NAME, 'img').get_attribute('src')
+                criticDetails = criticFields.find_elements(By.TAG_NAME, 'a')
+                # print(f'critic details: {[detail.text for detail in criticDetails]}')
+                criticName = criticDetails[0].text
+                criticUrl = criticDetails[0].get_attribute('href')
+                criticCompany = criticDetails[1].text
+                criticCompanyUrl = criticDetails[1].get_attribute('href')
+                reviewData['critic'] = {
+                    'name': criticName,
+                    'url': criticUrl,
+                    'img': criticImgUrl,
+                    'company': criticCompany,
+                    'companyUrl': criticCompanyUrl
                 }
-                reviewDatas.append(reviewData)
-            else:
-                print('review rating does not exist, skipping...')
-                continue
 
-        # driver.close()
-        # driver.switch_to.window(driver.window_handles[0])
+                reviewFields = reviewField.find_element(By.XPATH, './div[2]').find_element(
+                    By.CLASS_NAME, 'review_area').find_elements(By.XPATH, './div')
+                reviewDate = reviewFields[0].text
+                reviewText = reviewFields[1].find_element(By.XPATH, './div[1]').text
+                reviewUrl = reviewFields[1].find_element(
+                    By.XPATH, './div[2]').find_element(By.TAG_NAME, 'a').get_attribute('href')
+                reviewRating = reviewFields[1].find_element(By.XPATH, './div[2]').text.strip().split(' ')[-1]
+
+                if '/' in reviewRating:
+                    reviewData['review'] = {
+                        'date': reviewDate,
+                        'text': reviewText,
+                        'rating': reviewRating,
+                        'url': reviewUrl
+                    }
+                    reviewDatas.append(reviewData)
+                else:
+                    print('review rating does not exist, skipping...')
+                    continue
+
+            except:
+                print('review has missing data, skipping...')
+                continue
 
         print(f'driver object: {driver}')
         return reviewDatas
