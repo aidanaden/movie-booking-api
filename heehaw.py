@@ -293,7 +293,7 @@ def scrapeReviewsForMovie(movieName, driver):
 
     movieReviewsUrl = f'{movieUrl}/reviews'
     driver.get(movieReviewsUrl)
-    driver.implicitly_wait(1)
+    driver.implicitly_wait(2)
 
     reviewDatas = []
     reviewsTableFields = []
