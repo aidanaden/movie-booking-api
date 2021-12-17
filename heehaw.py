@@ -355,8 +355,7 @@ def scrapeReviewsForMovie(movieName, driver):
     driver.switch_to.window(driver.window_handles[0])
 
     print('driver object: {driver}')
-
-    return (reviewDatas, driver)
+    return reviewDatas
 
 CHROMEDRIVER_PATH = '/home/aidan/chromedriver'
 WINDOW_SIZE = "1920,1080"
@@ -387,7 +386,7 @@ movies = scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params)
 
 print('creating movie object data...')
 for movie in movies:
-    (reviews, driver) = scrapeReviewsForMovie(movie['movie'], driver)
+    reviews = scrapeReviewsForMovie(movie['movie'], driver)
     movie['reviews'] = reviews
     Movie.objects.create(data=movie)
 
