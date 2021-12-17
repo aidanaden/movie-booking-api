@@ -6,6 +6,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import WebDriverException
 from api.models import Movie
 
 def cleanTitle(title):
@@ -173,8 +174,9 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
 
             data = {
                 'movie': movieInfo['title'],
+                'info': movieInfo,
+                'reviews': [],
                 'cinemas': cinemas,
-                'info': movieInfo
             }
             movies.append(data)
 
@@ -211,7 +213,8 @@ def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
             movieJSON = {
                 'info': movieInfo,
                 'movie': movieInfo['title'],
-                'cinemas': []
+                'cinemas': [],
+                'reviews': []
             }
 
             driver.execute_script("window.open()")
@@ -303,11 +306,20 @@ def scrapeReviewsForMovie(movieName, driver):
         return []
     else:
         movieReviewsUrl = f'{movieUrl}/reviews'
-        driver.get(movieReviewsUrl)
-        driver.implicitly_wait(2)
-        
-        print(f'review site title: {driver.title}')
 
+        try:
+            driver.get(movieReviewsUrl)
+            driver.implicitly_wait(2)
+        except WebDriverException:
+            error = """
+            Message: unknown error: session deleted because of page crash
+            from unknown error: cannot determine loading status
+            from tab crashed
+            """
+            print(error)
+            return []
+
+        print(f'review site title: {driver.title}')
         reviewDatas = []
         reviewsTableFields = []
         try:
