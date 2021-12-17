@@ -492,7 +492,6 @@ params = {
 }
 
 movies = []
-Movie.objects.all().delete()
 
 # movies = scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params)
 movies = scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params)
@@ -503,6 +502,9 @@ for movie in movies:
     reviews = scrapeReviewsForMovie(movie['movie'], driver)
     print(f'reviews for {movie["movie"]}: {reviews}')
     movie['reviews'] = reviews
+
+Movie.objects.all().delete()
+for movie in movies:
     Movie.objects.create(data=movie)
 
 print('closing driver...')
