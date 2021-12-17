@@ -1,4 +1,5 @@
 
+import enum
 import re
 import requests
 import time
@@ -19,6 +20,13 @@ def cleanTitle(title):
     second = pattern.sub('', first)
     return second
 
+def getMovieFromId(movieId, tmdbUrl, apiKey):
+    movieParams = {
+        'api_key': apiKey,
+        'append_to_response': 'videos'
+    }
+    return requests.get(f'{tmdbUrl}/{movieId}', params=movieParams).json()
+
 CHROMEDRIVER_PATH = '/usr/bin/chromedriver'
 WINDOW_SIZE = "1920,1080"
 chrome_options = Options()
@@ -28,56 +36,115 @@ chrome_options.add_argument('--no-sandbox')
 
 driver = webdriver.Chrome(
     executable_path=CHROMEDRIVER_PATH, chrome_options=chrome_options)
-driver.get("https://www.shaw.sg/movie")
 
+def scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params):
+    driver.get("https://www.shaw.sg/movie")
 
-movieFields = driver.find_elements(By.XPATH, "//div[contains(@class, 'info')]")
-movieUrls = [movieField.find_element(By.TAG_NAME, 'a').get_attribute('href') for movieField in movieFields]
-movieNames = [movieField.find_element(By.TAG_NAME, 'a').text for movieField in movieFields]
+    movieFields = driver.find_elements(By.XPATH, "//div[contains(@class, 'info')]")
+    movieUrls = [movieField.find_element(By.TAG_NAME, 'a').get_attribute('href') for movieField in movieFields]
+    movieNames = [movieField.find_element(By.TAG_NAME, 'a').text for movieField in movieFields]
 
-for i, movieUrl, movieName in zip(movieUrls, movieNames):
-    print(f'movie name: {movieName}\ncleaned movie name: {cleanTitle(movieName)}\nmovie url: {movieUrl}\n')
+    for i, (movieUrl, movieName) in enumerate(zip(movieUrls, movieNames)):
+        cleanedMovieName = cleanTitle(movieName)
+        print(f'movie name: {movieName}\ncleaned movie name: {cleanedMovieName}\nmovie url: {movieUrl}\n')
 
-    driver.get(movieUrl)
-    cinemaDatesFields = []
-    
-    try:
-        cinemaDatesFields = driver.find_element(By.CLASS_NAME, 'owl-stage').find_elements(By.XPATH, './div')
-    except:
-        print('no movie timings available, skipping...')
-        continue
+        params['query'] = cleanedMovieName
+        searchResultInfo = requests.get(tmdbSearchUrl, params=params).json()
 
-    rightClickBtnField = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[2]/div[8]/div/div/div/div[2]/div/div[1]/div/div[2]/div[2]/div')
+        if len(searchResultInfo['results']) > 0:
+            movieId = searchResultInfo['results'][0]['id']
+            movieInfo = getMovieFromId(movieId, tmdbUrl, params['api_key'])
 
-    for j in range(len(cinemaDatesFields)):
-        if j >= 3:
-            print('clicking on right click button...')
-            rightClickBtnField.click()
-            time.sleep(3)
+            movieData = {
+                'movie': movieName,
+                'info': movieInfo,
+                'cinemas': []
+            }
 
-        cinemaDateField = driver.find_element(By.CLASS_NAME, 'owl-stage').find_element(By.XPATH, f'./div[{j+1}]')
-        cinemaDate = cinemaDateField.find_elements(By.TAG_NAME, 'span')[-1].text
-        print(f'cinema date selected: {cinemaDate}')
-        # click on date and wait for timings to load
-        cinemaDateField.click()
-        time.sleep(3)
-
-        cinemaFields = driver.find_element(By.XPATH, "//div[contains(@id, 'moviesDiv')]").find_elements(By.XPATH, './div')
-        for k, cinemaField in enumerate(cinemaFields):
-            if k == 0:
+            driver.get(movieUrl)
+            cinemaDatesFields = []
+            
+            try:
+                cinemaDatesFields = driver.find_element(By.CLASS_NAME, 'owl-stage').find_elements(By.XPATH, './div')
+            except:
+                print('no movie timings available, skipping...')
                 continue
-            else:
-                cinemaName = cinemaField.find_element(By.XPATH, './div[1]').text
-                print(f'=== {cinemaName} ===')
-                cinemaTimings = []
 
-                cinemaTimingFields = cinemaField.find_element(By.XPATH, './div[2]').find_elements(By.XPATH, './div')
-                for cinemaTimingField in cinemaTimingFields:
-                    cinemaTiming = cinemaTimingField.text
-                    cinemaTimingUrl = cinemaTimingField.find_element(By.TAG_NAME, 'a').get_attribute('href')
-                    timingData = {
-                        'timing': f'{cinemaDate} {cinemaTiming}',
-                        'url': cinemaTimingUrl
-                    }
-                    print(timingData)
-                    cinemaTimings.append(timingData)
+            rightClickBtnField = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[2]/div[8]/div/div/div/div[2]/div/div[1]/div/div[2]/div[2]/div')
+
+            for j in range(len(cinemaDatesFields)):
+                if j >= 3:
+                    print('clicking on right click button...')
+                    rightClickBtnField.click()
+                    time.sleep(3)
+                
+                time.sleep(1)
+                cinemaDateField = driver.find_element(By.CLASS_NAME, 'owl-stage').find_element(By.XPATH, f'./div[{j+1}]')
+                cinemaDateFields = cinemaDateField.find_elements(By.TAG_NAME, 'span')
+
+                if (len(cinemaDateFields) <= 0):
+                    continue
+                
+                print(f'length of cinema dates: {len(cinemaDateFields)}')
+                cinemaDate = cinemaDateFields[-1].text
+                print(f'cinema date selected: {cinemaDate}')
+                # click on date and wait for timings to load
+                cinemaDateField.click()
+                time.sleep(3)
+
+                cinemaFields = driver.find_element(By.XPATH, "//div[contains(@id, 'moviesDiv')]").find_elements(By.XPATH, './div')
+                for k, cinemaField in enumerate(cinemaFields):
+                    if k == 0:
+                        continue
+                    else:
+                        cinemaName = cinemaField.find_element(By.XPATH, './div[1]').text
+                        print(f'=== {cinemaName} ===')
+
+                        cinemaData = {
+                            'cinema': cinemaName,
+                            'timings': []
+                        }
+
+                        cinemaTimingFields = cinemaField.find_element(By.XPATH, './div[2]').find_elements(By.XPATH, './div')
+                        for cinemaTimingField in cinemaTimingFields:
+                            cinemaTiming = cinemaTimingField.text
+                            cinemaTimingUrl = cinemaTimingField.find_element(By.TAG_NAME, 'a').get_attribute('href')
+                            timingData = {
+                                'timing': f'{cinemaDate} {cinemaTiming}',
+                                'url': cinemaTimingUrl
+                            }
+                            print(timingData)
+                            cinemaData['timings'].append(timingData)
+                    
+                        if len(movieData['cinemas']) > k-1:
+                            movieData['cinemas'][k-1]['timings'] += cinemaData['timings']
+                        else:
+                            movieData['cinemas'].append(cinemaData)
+            
+            print(f'movie data for {movieName}: {movieData}')
+            print('')
+
+            movieExists = False
+            for movie in movies:
+                if movie['info']['id'] == movieData['info']['id']:
+                    movieExists = True
+                    movie['cinemas'] += movieData['cinemas']
+
+            if movieExists == False:
+                movies.append(movieData)
+
+        return movies
+
+tmdbUrl = 'https://api.themoviedb.org/3/movie'
+tmdbSearchUrl = 'https://api.themoviedb.org/3/search/movie'
+tmdbApiKey = '863e63572b437caf26335f1d1143e10c'
+
+params = {
+    'api_key': tmdbApiKey,
+    'language': 'en-US',
+    'primary_release_year': '2021',
+    'append_to_response': 'videos',
+}
+
+movieDatas = scrapeShaw(driver, [], tmdbUrl, tmdbSearchUrl, params)
+print(movieDatas)
