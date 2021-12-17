@@ -300,6 +300,8 @@ def scrapeReviewsForMovie(movieName, driver):
     movieReviewsUrl = f'{movieUrl}/reviews'
     driver.get(movieReviewsUrl)
     driver.implicitly_wait(2)
+    
+    print(f'review site title: {driver.title}')
 
     reviewDatas = []
     reviewsTableFields = []
@@ -307,7 +309,7 @@ def scrapeReviewsForMovie(movieName, driver):
         reviewsTableFields = driver.find_element(
             By.CLASS_NAME, 'review_table').find_elements(By.XPATH, './div')
     except:
-        return
+        return []
 
     for reviewField in reviewsTableFields:
         reviewData = {
@@ -354,7 +356,7 @@ def scrapeReviewsForMovie(movieName, driver):
     driver.close()
     driver.switch_to.window(driver.window_handles[0])
 
-    print('driver object: {driver}')
+    print(f'driver object: {driver}')
     return reviewDatas
 
 CHROMEDRIVER_PATH = '/home/aidan/chromedriver'
