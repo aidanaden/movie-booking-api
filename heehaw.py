@@ -503,6 +503,7 @@ for movie in movies:
     print(f'reviews for {movie["movie"]}: {reviews}')
     movie['reviews'] = reviews
 
+print('updating database with new movie timing data...')
 Movie.objects.all().delete()
 for movie in movies:
     Movie.objects.create(data=movie)
