@@ -11,9 +11,14 @@ from api.models import Movie
 
 def cleanTitle(title):
     splitTitles = title.split()
-    splitTitlesCleaned = ' '.join([split if '’' not in split else '' for split in splitTitles]).strip()
+    splitTitlesCleaned = ' '.join([split if '’' not in split and "'" not in split else '' for split in splitTitles]).strip()
     pattern = re.compile("[^a-zA-Z0-9-':\s]+")
-    return pattern.sub('', splitTitlesCleaned)
+    pattern2 = re.compile("[\(\[].*?[\)\]]")
+    first = pattern2.sub('', splitTitlesCleaned)
+    second = pattern.sub('', first)
+    removeDisney = ' '.join([name if 'disney' not in name else '' for name in second.split()]).strip()
+    return removeDisney
+
 
 def getCinemaTimingUrl(cinemaUrl, cinemaTiming):
     format = '%I:%M %p'
