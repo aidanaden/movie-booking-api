@@ -584,7 +584,7 @@ params = {
 movies = []
 
 # movies = scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params)
-movies = scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params)
+# movies = scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params)
 movies = scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params)
 
 print('creating movie object data...')
