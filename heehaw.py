@@ -284,6 +284,8 @@ def scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params):
     movieUrls = [movieField.find_element(By.TAG_NAME, 'a').get_attribute('href') for movieField in movieFields]
     movieNames = [movieField.find_element(By.TAG_NAME, 'a').text for movieField in movieFields]
 
+    print(f'found shaw movies: {movieNames}')
+
     for i, (movieUrl, movieName) in enumerate(zip(movieUrls, movieNames)):
         cleanedMovieName = cleanTitle(movieName)
         print(f'movie name: {movieName}\ncleaned movie name: {cleanedMovieName}\nmovie url: {movieUrl}\n')
