@@ -49,6 +49,7 @@ def convertGVTiming(timing):
     timeDateTimeObj = datetime.datetime.strptime(timing, '%I:%m %p')
     return timeDateTimeObj.strftime('%I:%m %p')
 
+# convert time from 2:00 PM to 02:00 PM
 def convertShawTiming(timing):
     splitTiming = timing.split()
     secondSplit = splitTiming[0].split(':')
@@ -57,10 +58,12 @@ def convertShawTiming(timing):
     splitTiming[0] = ':'.join(secondSplit)
     return ' '.join(splitTiming)
 
+# convert time from 12/12/2021 5:15:00 PM to 12/12/2021 5:15 PM
 def convertCathayTiming(timing):
     ogSplit = timing.split()
     ogSplit[1] = ':'.join(ogSplit[1].split(':')[:-1])
-    return ' '.join(ogSplit)
+    convertedTime = convertShawTiming(' '.join(ogSplit[1:]))
+    return ' '.join([ogSplit[0], convertedTime])
 
 # SCRAPE GV
 def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
@@ -446,26 +449,27 @@ def scrapeReviewsForMovie(movieName, driver):
         driver.get(movieUrl)
         time.sleep(1)
 
-        scoreFields = driver.find_element(By.CLASS_NAME, 'scores-container').find_elements(By.XPATH, './div')
-        tomatoScore = scoreFields[0].find_element(By.CLASS_NAME, 'percentage').text
-        audienceScore = scoreFields[1].find_element(By.CLASS_NAME, 'percentage').text
-        tomatoNumCritics = driver.find_element(By.XPATH, "//a[contains(@slot, 'critics-count')]").text
-        audienceNumCritics = driver.find_element(By.XPATH, "//a[contains(@slot, 'audience-count')]").text
+        tomatoData = {}
 
-        criticData = {
-            'score': tomatoScore,
-            'numCritics': tomatoNumCritics
-        }
+        try:
+            scoreFields = driver.find_element(By.CLASS_NAME, 'scores-container').find_elements(By.XPATH, './div')
+            tomatoScore = scoreFields[0].find_element(By.CLASS_NAME, 'percentage').text
+            audienceScore = scoreFields[1].find_element(By.CLASS_NAME, 'percentage').text
+            tomatoNumCritics = driver.find_element(By.XPATH, "//a[contains(@slot, 'critics-count')]").text
+            audienceNumCritics = driver.find_element(By.XPATH, "//a[contains(@slot, 'audience-count')]").text
+            criticData = {
+                'score': tomatoScore,
+                'numCritics': tomatoNumCritics
+            }
+            audienceData = {
+                'score': audienceScore,
+                'numAudience': audienceNumCritics
+            }
+            tomatoData['tomatoScore'] = criticData
+            tomatoData['audienceScore'] = audienceData
 
-        audienceData = {
-            'score': audienceScore,
-            'numAudience': audienceNumCritics
-        }
-
-        tomatoData = {
-            'tomatoScore': criticData,
-            'audienceScore': audienceData
-        }
+        except:
+            print('movie does not contain any tomato/audience ratings, skipping...')
 
         movieReviewsUrl = f'{movieUrl}/reviews'
 
