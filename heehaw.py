@@ -354,7 +354,7 @@ def scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params):
 
                         cinemaTimingFields = cinemaField.find_element(By.XPATH, './div[2]').find_elements(By.XPATH, './div')
                         for cinemaTimingField in cinemaTimingFields:
-                            cinemaTiming = cinemaTimingField.text.replace('*', '')
+                            cinemaTiming = cinemaTimingField.text.replace('+', '')
                             cinemaTimingUrl = cinemaTimingField.find_element(By.TAG_NAME, 'a').get_attribute('href')
                             timingData = {
                                 'timing': f'{convertShawDate(cinemaDate)} {cinemaTiming}',
