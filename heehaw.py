@@ -40,6 +40,11 @@ def getMovieFromId(movieId, tmdbUrl, apiKey):
     }
     return requests.get(f'{tmdbUrl}/{movieId}', params=movieParams).json()
 
+def convertShawDate(date):
+    capitalDate = date.title()
+    dateTimeObj = capitalDate.strptime(date, '%-d %b %Y')
+    return dateTimeObj.strftime('%d/%m/%Y')
+
 # SCRAPE GV
 def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
     driver.get("https://www.gv.com.sg/GVMovies")
@@ -349,10 +354,10 @@ def scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params):
 
                         cinemaTimingFields = cinemaField.find_element(By.XPATH, './div[2]').find_elements(By.XPATH, './div')
                         for cinemaTimingField in cinemaTimingFields:
-                            cinemaTiming = cinemaTimingField.text
+                            cinemaTiming = cinemaTimingField.text.replace('*', '')
                             cinemaTimingUrl = cinemaTimingField.find_element(By.TAG_NAME, 'a').get_attribute('href')
                             timingData = {
-                                'timing': f'{cinemaDate} {cinemaTiming}',
+                                'timing': f'{convertShawDate(cinemaDate)} {cinemaTiming}',
                                 'url': cinemaTimingUrl
                             }
                             print(timingData)
