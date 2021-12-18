@@ -54,9 +54,9 @@ def convertShawTiming(timing):
     return timeDateTimeObj.strftime('%I:%m %p')
 
 def convertCathayTiming(timing):
-    print(f'cathay timing: {timing}')
-    timeDateTimeObj = datetime.datetime.strptime(timing, '%d/%m/%Y %I:%m:%S %p')
-    return timeDateTimeObj.strftime('%d/%m/%Y %I:%m %p')
+    ogSplit = timing.split()
+    ogSplit[1] = ':'.join(ogSplit[1].split(':')[:-1])
+    return ' '.join(ogSplit)
 
 # SCRAPE GV
 def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
