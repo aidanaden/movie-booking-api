@@ -400,7 +400,7 @@ def scrapeReviewsForMovie(movieName, driver):
         searchResultMovieName = searchResultMovieField.text
         
         if movieName not in searchResultMovieName:
-            print('movie search result {searchResultMovieName} does not contain movie name {movieName}, skipping...')
+            print(f'movie search result {searchResultMovieName} does not contain movie name {movieName}, skipping...')
             return []
 
         print(f'found movie url: {movieUrl}')
