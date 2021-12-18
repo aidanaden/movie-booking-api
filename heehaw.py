@@ -45,6 +45,18 @@ def convertShawDate(date):
     dateTimeObj = datetime.datetime.strptime(capitalDate, '%d %b %Y')
     return dateTimeObj.strftime('%d/%m/%Y')
 
+def convertGVTiming(timing):
+    timeDateTimeObj = datetime.datetime.strptime(timing, '%-I:%m %p')
+    return timeDateTimeObj.strftime('%I:%m %p')
+
+def convertShawTiming(timing):
+    timeDateTimeObj = datetime.datetime.strptime(timing, '%-I:%m %p')
+    return timeDateTimeObj.strftime('%I:%m %p')
+
+def convertCathayTiming(timing):
+    timeDateTimeObj = datetime.datetime.strptime(timing, '%-I:%m:%S %p')
+    return timeDateTimeObj.strftime('%I:%m %p')
+
 # SCRAPE GV
 def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
     driver.get("https://www.gv.com.sg/GVMovies")
@@ -156,7 +168,7 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                             cinemaUrl = driver.current_url
 
                             cinemaDateData = {
-                                "timing": f'{cinemaDate.split()[-1]} {cinemaTiming}',
+                                "timing": f'{cinemaDate.split()[-1]} {convertGVTiming(cinemaTiming)}',
                                 "url": cinemaUrl
                             }
                             print(cinemaDateData)
@@ -257,7 +269,9 @@ def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                                     'data-href-stop')
                                 if len(timingTitleText) > 0:
                                     timingData = {
-                                        'timing': timingTitleText, 'url': timingBookingUrl}
+                                        'timing': convertCathayTiming(timingTitleText),
+                                        'url': timingBookingUrl
+                                    }
                                     print(timingData)
                                     cinemaTimingList.append(timingData)
                             
@@ -357,7 +371,7 @@ def scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                             cinemaTiming = cinemaTimingField.text.replace('+', '').replace('*', '')
                             cinemaTimingUrl = cinemaTimingField.find_element(By.TAG_NAME, 'a').get_attribute('href')
                             timingData = {
-                                'timing': f'{convertShawDate(cinemaDate)} {cinemaTiming}',
+                                'timing': f'{convertShawDate(cinemaDate)} {convertShawTiming(cinemaTiming)}',
                                 'url': cinemaTimingUrl
                             }
                             print(timingData)
@@ -423,6 +437,31 @@ def scrapeReviewsForMovie(movieName, driver):
         print('could not find reviews for movie')
         return []
     else:
+
+        driver.get(movieUrl)
+        time.sleep(1)
+
+        scoreFields = driver.find_element(By.CLASS_NAME, 'scores-container').find_elements(By.XPATH, './div')
+        tomatoScore = scoreFields[0].find_element(By.CLASS_NAME, 'percentage').text
+        audienceScore = scoreFields[1].find_element(By.CLASS_NAME, 'percentage').text
+        tomatoNumCritics = driver.find_element(By.XPATH, "//a[contains(@slot, 'critics-count')]").text
+        audienceNumCritics = driver.find_element(By.XPATH, "//a[contains(@slot, 'audience-count')]").text
+
+        criticData = {
+            'score': tomatoScore,
+            'numCritics': tomatoNumCritics
+        }
+
+        audienceData = {
+            'score': audienceScore,
+            'numAudience': audienceNumCritics
+        }
+
+        tomatoData = {
+            'tomatoScore': criticData,
+            'audienceScore': audienceData
+        }
+
         movieReviewsUrl = f'{movieUrl}/reviews'
 
         try:
@@ -494,7 +533,7 @@ def scrapeReviewsForMovie(movieName, driver):
                 continue
 
         print(f'driver object: {driver}')
-        return reviewDatas
+        return tomatoData, reviewDatas
 
 CHROMEDRIVER_PATH = '/home/aidan/chromedriver'
 WINDOW_SIZE = "1920,1080"
@@ -525,9 +564,10 @@ movies = scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params)
 
 print('creating movie object data...')
 for movie in movies:
-    reviews = scrapeReviewsForMovie(movie['movie'], driver)
+    tomatoData, reviews = scrapeReviewsForMovie(movie['movie'], driver)
     print(f'reviews for {movie["movie"]}: {reviews}')
     movie['reviews'] = reviews
+    movie['info']['tomatoData'] = tomatoData
 
 print('updating database with new movie timing data...')
 Movie.objects.all().delete()
