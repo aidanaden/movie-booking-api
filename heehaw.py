@@ -540,9 +540,8 @@ def scrapeReviewsForMovie(movieName, driver):
             except:
                 print('review has missing data, skipping...')
                 continue
-
-        print(f'driver object: {driver}')
-        return tomatoData, reviewDatas
+            
+        return (tomatoData, reviewDatas)
 
 CHROMEDRIVER_PATH = '/home/aidan/chromedriver'
 WINDOW_SIZE = "1920,1080"
