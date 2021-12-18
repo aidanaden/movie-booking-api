@@ -42,7 +42,7 @@ def getMovieFromId(movieId, tmdbUrl, apiKey):
 
 def convertShawDate(date):
     capitalDate = date.title()
-    dateTimeObj = datetime.datetime.strptime(capitalDate, '%-d %b %Y')
+    dateTimeObj = datetime.datetime.strptime(capitalDate, '%d %b %Y')
     return dateTimeObj.strftime('%d/%m/%Y')
 
 # SCRAPE GV
