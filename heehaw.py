@@ -468,6 +468,7 @@ def scrapeReviewsForMovie(movieName, driver):
 
         try:
             scoreFields = driver.find_element(By.CLASS_NAME, 'scores-container').find_elements(By.XPATH, './div')
+            print(f'scoreFields: {scoreFields.text}')
             tomatoScore = scoreFields[0].find_element(By.CLASS_NAME, 'percentage').text
             audienceScore = scoreFields[1].find_element(By.CLASS_NAME, 'percentage').text
             tomatoNumCritics = driver.find_element(By.XPATH, "//a[contains(@slot, 'critics-count')]").text
