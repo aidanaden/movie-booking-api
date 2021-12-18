@@ -50,7 +50,7 @@ def convertGVTiming(timing):
     return timeDateTimeObj.strftime('%I:%m %p')
 
 def convertShawTiming(timing):
-    timeDateTimeObj = datetime.datetime.strptime(timing, '%I:%m %p')
+    timeDateTimeObj = datetime.datetime.strptime(timing, '%H:%m %p')
     return timeDateTimeObj.strftime('%I:%m %p')
 
 def convertCathayTiming(timing):
