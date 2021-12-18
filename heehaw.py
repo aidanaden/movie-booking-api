@@ -54,6 +54,7 @@ def convertShawTiming(timing):
     return timeDateTimeObj.strftime('%I:%m %p')
 
 def convertCathayTiming(timing):
+    print(f'cathay timing: {timing}')
     timeDateTimeObj = datetime.datetime.strptime(timing, '%d/%m/%Y %I:%m:%S %p')
     return timeDateTimeObj.strftime('%d/%m/%Y %I:%m %p')
 
