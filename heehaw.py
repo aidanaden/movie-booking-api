@@ -371,7 +371,7 @@ def scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params):
             if movieExists == False:
                 movies.append(movieData)
 
-        return movies
+    return movies
 
 def scrapeReviewsForMovie(movieName, driver):
     print(f'finding reviews for movie: {movieName}')
