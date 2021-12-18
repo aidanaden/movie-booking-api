@@ -46,15 +46,15 @@ def convertShawDate(date):
     return dateTimeObj.strftime('%d/%m/%Y')
 
 def convertGVTiming(timing):
-    timeDateTimeObj = datetime.datetime.strptime(timing, '%-I:%m %p')
+    timeDateTimeObj = datetime.datetime.strptime(timing, '%#I:%m %p')
     return timeDateTimeObj.strftime('%I:%m %p')
 
 def convertShawTiming(timing):
-    timeDateTimeObj = datetime.datetime.strptime(timing, '%-I:%m %p')
+    timeDateTimeObj = datetime.datetime.strptime(timing, '%#I:%m %p')
     return timeDateTimeObj.strftime('%I:%m %p')
 
 def convertCathayTiming(timing):
-    timeDateTimeObj = datetime.datetime.strptime(timing, '%-I:%m:%S %p')
+    timeDateTimeObj = datetime.datetime.strptime(timing, '%#I:%m:%S %p')
     return timeDateTimeObj.strftime('%I:%m %p')
 
 # SCRAPE GV
