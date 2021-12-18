@@ -392,6 +392,10 @@ def scrapeReviewsForMovie(movieName, driver):
             By.TAG_NAME, 'ul'
         ).find_element(
             By.XPATH, "//search-page-result[contains(@type, 'movie')]"
+        ).find_element(
+            By.TAG_NAME, 'ul'
+        ).find_element(
+            By.TAG_NAME, 'search-page-media-row'
         ).find_elements(
             By.TAG_NAME, 'a'
         )[-1]
