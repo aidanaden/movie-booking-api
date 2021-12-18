@@ -450,41 +450,43 @@ def scrapeReviewsForMovie(movieName, driver):
         time.sleep(1)
 
         tomatoData = {}
-        scoreFields = driver.find_element(By.CLASS_NAME, 'scores-container').find_elements(By.XPATH, './div')
-        tomatoScore = scoreFields[0].find_element(By.CLASS_NAME, 'percentage').text
-        audienceScore = scoreFields[1].find_element(By.CLASS_NAME, 'percentage').text
-        tomatoNumCritics = driver.find_element(By.XPATH, "//a[contains(@slot, 'critics-count')]").text
-        audienceNumCritics = driver.find_element(By.XPATH, "//a[contains(@slot, 'audience-count')]").text
-        criticData = {
-            'score': tomatoScore,
-            'numCritics': tomatoNumCritics
-        }
-        audienceData = {
-            'score': audienceScore,
-            'numAudience': audienceNumCritics
-        }
-        tomatoData['tomatoScore'] = criticData
-        tomatoData['audienceScore'] = audienceData
+        # scoreFields = driver.find_element(By.CLASS_NAME, 'scores-container').find_elements(By.XPATH, './div')
+        # tomatoScore = scoreFields[0].find_element(By.CLASS_NAME, 'percentage').text
+        # audienceScore = scoreFields[1].find_element(By.CLASS_NAME, 'percentage').text
+        # tomatoNumCritics = driver.find_element(By.XPATH, "//a[contains(@slot, 'critics-count')]").text
+        # audienceNumCritics = driver.find_element(By.XPATH, "//a[contains(@slot, 'audience-count')]").text
+        # criticData = {
+        #     'score': tomatoScore,
+        #     'numCritics': tomatoNumCritics
+        # }
+        # audienceData = {
+        #     'score': audienceScore,
+        #     'numAudience': audienceNumCritics
+        # }
+        # tomatoData['tomatoScore'] = criticData
+        # tomatoData['audienceScore'] = audienceData
 
-        # try:
-        #     scoreFields = driver.find_element(By.CLASS_NAME, 'scores-container').find_elements(By.XPATH, './div')
-        #     tomatoScore = scoreFields[0].find_element(By.CLASS_NAME, 'percentage').text
-        #     audienceScore = scoreFields[1].find_element(By.CLASS_NAME, 'percentage').text
-        #     tomatoNumCritics = driver.find_element(By.XPATH, "//a[contains(@slot, 'critics-count')]").text
-        #     audienceNumCritics = driver.find_element(By.XPATH, "//a[contains(@slot, 'audience-count')]").text
-        #     criticData = {
-        #         'score': tomatoScore,
-        #         'numCritics': tomatoNumCritics
-        #     }
-        #     audienceData = {
-        #         'score': audienceScore,
-        #         'numAudience': audienceNumCritics
-        #     }
-        #     tomatoData['tomatoScore'] = criticData
-        #     tomatoData['audienceScore'] = audienceData
+        try:
+            scoreFields = driver.find_element(By.CLASS_NAME, 'scores-container').find_elements(By.XPATH, './div')
+            tomatoScore = scoreFields[0].find_element(By.CLASS_NAME, 'percentage').text
+            audienceScore = scoreFields[1].find_element(By.CLASS_NAME, 'percentage').text
+            tomatoNumCritics = driver.find_element(By.XPATH, "//a[contains(@slot, 'critics-count')]").text
+            audienceNumCritics = driver.find_element(By.XPATH, "//a[contains(@slot, 'audience-count')]").text
+            criticData = {
+                'score': tomatoScore,
+                'numCritics': tomatoNumCritics
+            }
+            audienceData = {
+                'score': audienceScore,
+                'numAudience': audienceNumCritics
+            }
+            tomatoData['tomatoScore'] = criticData
+            tomatoData['audienceScore'] = audienceData
 
-        # except:
-        #     print('movie does not contain any tomato/audience ratings, skipping...')
+            print(f'tomato data: {tomatoData}')
+
+        except:
+            print('movie does not contain any tomato/audience ratings, skipping...')
 
         movieReviewsUrl = f'{movieUrl}/reviews'
 
