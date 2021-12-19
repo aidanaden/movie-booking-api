@@ -19,7 +19,6 @@ def cleanTitle(title):
     removeDisney = ' '.join([name if 'disney' not in name else '' for name in second.split()]).strip()
     return removeDisney
 
-
 def getCinemaTimingUrl(cinemaUrl, cinemaTiming):
     format = '%I:%M %p'
     datetimeStr = datetime.datetime.strptime(cinemaTiming, format)
@@ -39,6 +38,12 @@ def getMovieFromId(movieId, tmdbUrl, apiKey):
         'append_to_response': 'videos'
     }
     return requests.get(f'{tmdbUrl}/{movieId}', params=movieParams).json()
+
+def verifySearchMovieName(searchMovieName, movieName):
+    pattern = re.compile('[\W_]+')
+    cleanedSearchMovieName = pattern.sub('', searchMovieName.lower())
+    cleanedMovieName = pattern.sub('', movieName.lower())
+    return cleanedSearchMovieName == cleanedMovieName
 
 def convertShawDate(date):
     capitalDate = date.title()
@@ -432,7 +437,7 @@ def scrapeReviewsForMovie(movieName, driver):
         movieUrl = searchResultMovieField.get_attribute('href')
         searchResultMovieName = searchResultMovieField.text
         
-        if movieName not in searchResultMovieName:
+        if not verifySearchMovieName(searchResultMovieName, movieName):
             print(f'movie search result {searchResultMovieName} does not contain movie name {movieName}, skipping...')
             return ({}, [])
 
@@ -446,14 +451,9 @@ def scrapeReviewsForMovie(movieName, driver):
         return ({}, [])
     else:
 
-        driver.get(movieUrl)
-        driver.implicitly_wait(3)
-
         tomatoData = {}
         try:
             driver.get(movieUrl)
-            time.sleep(2)
-
             scoreboardElement = driver.find_element(By.ID, 'topSection').find_element(By.XPATH, './div[1]').find_element(By.TAG_NAME, 'score-board')
             tomatoScore = scoreboardElement.get_attribute('tomatometerscore')
             audienceScore = scoreboardElement.get_attribute('audiencescore')
@@ -475,29 +475,6 @@ def scrapeReviewsForMovie(movieName, driver):
             tomatoData['rating'] = rating
             tomatoData['tomatoScore'] = criticData
             tomatoData['audienceScore'] = audienceData
-
-        except:
-            print('movie does not contain any tomato/audience ratings, skipping...')
-
-        try:
-            scoreFields = driver.find_element(By.CLASS_NAME, 'scores-container').find_elements(By.XPATH, './div')
-            print(f'scoreFields: {scoreFields.text}')
-            tomatoScore = scoreFields[0].find_element(By.CLASS_NAME, 'percentage').text
-            audienceScore = scoreFields[1].find_element(By.CLASS_NAME, 'percentage').text
-            tomatoNumCritics = driver.find_element(By.XPATH, "//a[contains(@slot, 'critics-count')]").text
-            audienceNumCritics = driver.find_element(By.XPATH, "//a[contains(@slot, 'audience-count')]").text
-            criticData = {
-                'score': tomatoScore,
-                'numCritics': tomatoNumCritics
-            }
-            audienceData = {
-                'score': audienceScore,
-                'numAudience': audienceNumCritics
-            }
-            tomatoData['tomatoScore'] = criticData
-            tomatoData['audienceScore'] = audienceData
-
-            print(f'tomato data: {tomatoData}')
 
         except:
             print('movie does not contain any tomato/audience ratings, skipping...')
