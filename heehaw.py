@@ -98,8 +98,7 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
         # Switch to the newly opened tab
         driver.switch_to.window(driver.window_handles[1])
         driver.get(movieDetailsUrl)
-        print(f'movie detail url: {movieDetailsUrl}')
-        driver.implicitly_wait(2)
+        driver.implicitly_wait(1)
 
         numCinemas = len(driver.find_element(
             By.CLASS_NAME, 'cinemas-body').find_element(By.TAG_NAME, 'ul').find_elements(By.TAG_NAME, 'li'))
@@ -116,49 +115,19 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
             cinemaName = movieCinemaElement.text
             print(f'=== {cinemaName} ===')
             driver.execute_script('arguments[0].click();', movieCinemaElement)
-            time.sleep(1)
-            cinemaTimings = driver.find_element(By.CLASS_NAME, 'time-body')
-            daysElements = cinemaTimings.find_element(By.XPATH, './ul').find_elements(By.XPATH, './li')
-            print(f'number days elements: {len(daysElements)}')
 
-            for j in range(len(daysElements)):
-                # Click on cinema button (to display cinema timings)
-                # AFTER calling driver.back()
-                time.sleep(1)
-                movieCinemas = driver.find_element(
-                        By.CLASS_NAME, 'cinemas-section'
-                    ).find_element(
-                        By.TAG_NAME, 'ul'
-                    ).find_elements(By.TAG_NAME, 'li')
-                    
-                movieCinema = movieCinemas[i]
-                movieCinemaElement = movieCinema.find_element(By.TAG_NAME, 'a')
-                cinemaName = movieCinemaElement.text
-                driver.execute_script('arguments[0].click();', movieCinemaElement)
-
-                # get list of available days for current cinema
-                    # and select latest non-visited day
+            try:
                 cinemaTimings = driver.find_element(By.CLASS_NAME, 'time-body')
-                newDaysElementList = WebDriverWait(cinemaTimings, 5).until(
-                    EC.presence_of_element_located((By.XPATH, './ul')))
-                newDaysElements = newDaysElementList.find_elements(By.XPATH, './li')
-                dayElement = newDaysElements[j]
+                daysElementList = WebDriverWait(cinemaTimings, 5).until(
+                            EC.presence_of_element_located((By.XPATH, './ul')))
+                daysElements = daysElementList.find_elements(By.XPATH, './li')
 
-                timingBtnFields = dayElement.find_element(
-                    By.TAG_NAME, 'ul').find_elements(By.TAG_NAME, 'li')
-
-                # try:
-                time.sleep(1)
-                for k in range(len(timingBtnFields)):
-                    # RE-find elements/fields due to driver.back()
+                for j in range(len(daysElements)):
+                    # Click on cinema button (to display cinema timings)
+                    # AFTER calling driver.back()
                     movieCinemas = driver.find_element(
-                        By.CLASS_NAME, 'cinemas-section'
-                    ).find_element(
-                        By.TAG_NAME, 'ul'
-                    ).find_elements(By.TAG_NAME, 'li')
-
+                        By.CLASS_NAME, 'cinemas-body').find_element(By.TAG_NAME, 'ul').find_elements(By.TAG_NAME, 'li')
                     movieCinema = movieCinemas[i]
-                    print(f'current movie cinema: {movieCinema.text}')
 
                     movieCinemaElement = movieCinema.find_element(By.TAG_NAME, 'a')
                     cinemaName = movieCinemaElement.text
@@ -166,44 +135,70 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
 
                     # get list of available days for current cinema
                     # and select latest non-visited day
-                    cinemaTimings = driver.find_element(
-                        By.CLASS_NAME, 'time-body')
+                    cinemaTimings = driver.find_element(By.CLASS_NAME, 'time-body')
                     newDaysElementList = WebDriverWait(cinemaTimings, 5).until(
                         EC.presence_of_element_located((By.XPATH, './ul')))
-                    newDaysElements = newDaysElementList.find_elements(
-                        By.XPATH, './li')
+                    newDaysElements = newDaysElementList.find_elements(By.XPATH, './li')
                     dayElement = newDaysElements[j]
 
                     timingBtnFields = dayElement.find_element(
                         By.TAG_NAME, 'ul').find_elements(By.TAG_NAME, 'li')
-                    cinemaDate = dayElement.find_element(
-                        By.TAG_NAME, 'p').text
+                    try:
+                        for k in range(len(timingBtnFields)):
 
-                    # get current timing button and URL
-                    timingBtn = timingBtnFields[k].find_element(
-                        By.TAG_NAME, 'button')
-                    cinemaTiming = timingBtn.text
-                    driver.execute_script(
-                        "arguments[0].click();", timingBtn)
-                    cinemaUrl = driver.current_url
+                            # RE-find elements/fields due to driver.back()
+                            movieCinemas = driver.find_element(
+                                By.CLASS_NAME, 'cinemas-body').find_element(By.TAG_NAME, 'ul').find_elements(By.TAG_NAME, 'li')
+                            movieCinema = movieCinemas[i]
 
-                    cinemaDateData = {
-                        "timing": f'{cinemaDate.split()[-1]} {convertGVTiming(cinemaTiming)}',
-                        "url": cinemaUrl
-                    }
-                    print(cinemaDateData)
-                    cinemaDates.append(cinemaDateData)
+                            movieCinemaElement = movieCinema.find_element(
+                                By.TAG_NAME, 'a')
+                            cinemaName = movieCinemaElement.text
+                            driver.execute_script(
+                                'arguments[0].click();', movieCinemaElement)
 
-                    driver.back()
-                    
-                # except:
-                #     print('Exception occurred while trying to loop thru timings')
-                #     continue
+                            # get list of available days for current cinema
+                            # and select latest non-visited day
+                            cinemaTimings = driver.find_element(
+                                By.CLASS_NAME, 'time-body')
+                            newDaysElementList = WebDriverWait(cinemaTimings, 5).until(
+                                EC.presence_of_element_located((By.XPATH, './ul')))
+                            newDaysElements = newDaysElementList.find_elements(
+                                By.XPATH, './li')
+                            dayElement = newDaysElements[j]
+
+                            timingBtnFields = dayElement.find_element(
+                                By.TAG_NAME, 'ul').find_elements(By.TAG_NAME, 'li')
+                            cinemaDate = dayElement.find_element(
+                                By.TAG_NAME, 'p').text
+
+                            # get current timing button and URL
+                            timingBtn = timingBtnFields[k].find_element(
+                                By.TAG_NAME, 'button')
+                            cinemaTiming = timingBtn.text
+                            driver.execute_script(
+                                "arguments[0].click();", timingBtn)
+                            cinemaUrl = driver.current_url
+
+                            cinemaDateData = {
+                                "timing": f'{cinemaDate.split()[-1]} {convertShawTiming(cinemaTiming)}',
+                                "url": cinemaUrl
+                            }
+                            print(cinemaDateData)
+                            cinemaDates.append(cinemaDateData)
+
+                            driver.back()
+                    except:
+                        print('Exception occurred while trying to loop thru timings')
+                        continue
 
                 cinemas.append({
                     "cinema": cinemaName,
                     "dates": cinemaDates
                 })
+
+            finally:
+                continue
         
         params['query'] = cleanedTitleText
         searchResultInfo = requests.get(tmdbSearchUrl, params=params).json()
