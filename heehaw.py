@@ -124,7 +124,7 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
             for j in range(len(daysElements)):
                 # Click on cinema button (to display cinema timings)
                 # AFTER calling driver.back()
-                driver.implicity_wait(1)
+                driver.implicitly_wait(1)
                 movieCinemas = driver.find_element(
                         By.CLASS_NAME, 'cinemas-section'
                     ).find_element(
