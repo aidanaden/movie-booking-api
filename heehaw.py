@@ -116,13 +116,12 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
             cinemaName = movieCinemaElement.text
             print(f'=== {cinemaName} ===')
             driver.execute_script('arguments[0].click();', movieCinemaElement)
+            time.sleep(1)
 
             try:
                 cinemaTimings = driver.find_element(By.CLASS_NAME, 'time-body')
                 print(f'cinema timings: {cinemaTimings.text}')
-                daysElementList = WebDriverWait(cinemaTimings, 5).until(
-                            EC.presence_of_element_located((By.XPATH, './ul')))
-                daysElements = daysElementList.find_elements(By.XPATH, './li')
+                daysElements = cinemaTimings.find_element(By.XPATH, './ul').find_elements(By.XPATH, './li')
 
                 print(f'days elements: {daysElements.text}')
 
