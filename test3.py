@@ -23,9 +23,12 @@ def getNameFromUrl(url):
 
 def cleanTitle(title):
     splitTitles = title.split()
-    splitTitlesCleaned = ' '.join([split if '’' not in split else '' for split in splitTitles]).strip()
+    splitTitlesCleaned = ' '.join([split if '’' not in split and "'" not in split else '' for split in splitTitles]).strip()
     pattern = re.compile("[^a-zA-Z0-9-':\s]+")
-    return pattern.sub('', splitTitlesCleaned)
+    pattern2 = re.compile("[\(\[].*?[\)\]]")
+    first = pattern2.sub('', splitTitlesCleaned)
+    second = pattern.sub('', first)
+    return second
 
 def scrapeReviewsForMovie(movieName, driver):
     # create query param of movie name (replace spaces with %20)

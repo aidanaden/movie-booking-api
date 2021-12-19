@@ -450,21 +450,34 @@ def scrapeReviewsForMovie(movieName, driver):
         driver.implicitly_wait(3)
 
         tomatoData = {}
-        # scoreFields = driver.find_element(By.CLASS_NAME, 'scores-container').find_elements(By.XPATH, './div')
-        # tomatoScore = scoreFields[0].find_element(By.CLASS_NAME, 'percentage').text
-        # audienceScore = scoreFields[1].find_element(By.CLASS_NAME, 'percentage').text
-        # tomatoNumCritics = driver.find_element(By.XPATH, "//a[contains(@slot, 'critics-count')]").text
-        # audienceNumCritics = driver.find_element(By.XPATH, "//a[contains(@slot, 'audience-count')]").text
-        # criticData = {
-        #     'score': tomatoScore,
-        #     'numCritics': tomatoNumCritics
-        # }
-        # audienceData = {
-        #     'score': audienceScore,
-        #     'numAudience': audienceNumCritics
-        # }
-        # tomatoData['tomatoScore'] = criticData
-        # tomatoData['audienceScore'] = audienceData
+        try:
+            driver.get(movieUrl)
+            time.sleep(2)
+
+            scoreboardElement = driver.find_element(By.ID, 'topSection').find_element(By.XPATH, './div[1]').find_element(By.TAG_NAME, 'score-board')
+            tomatoScore = scoreboardElement.get_attribute('tomatometerscore')
+            audienceScore = scoreboardElement.get_attribute('audiencescore')
+            rating = scoreboardElement.get_attribute('rating')
+
+            print(f'tomatometer: {tomatoScore}, audience: {audienceScore}, rating: {rating}')
+
+            tomatoCount = scoreboardElement.find_elements(By.TAG_NAME, 'a')[0].text.split()[0]
+            audienceCount = scoreboardElement.find_elements(By.TAG_NAME, 'a')[1].text.split()[0]
+
+            criticData = {
+                'score': tomatoScore,
+                'count': tomatoCount
+            }
+            audienceData = {
+                'score': audienceScore,
+                'count': audienceCount
+            }
+            tomatoData['rating'] = rating
+            tomatoData['tomatoScore'] = criticData
+            tomatoData['audienceScore'] = audienceData
+
+        except:
+            print('movie does not contain any tomato/audience ratings, skipping...')
 
         try:
             scoreFields = driver.find_element(By.CLASS_NAME, 'scores-container').find_elements(By.XPATH, './div')
