@@ -330,7 +330,7 @@ def scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params):
             movieInfo = getMovieFromId(movieId, tmdbUrl, params['api_key'])
 
             movieData = {
-                'movie': movieName,
+                'movie': movieInfo['title'],
                 'info': movieInfo,
                 'cinemas': []
             }
