@@ -149,12 +149,15 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
 
                     timingBtnFields = dayElement.find_element(
                         By.TAG_NAME, 'ul').find_elements(By.TAG_NAME, 'li')
+
                     try:
                         for k in range(len(timingBtnFields)):
-
                             # RE-find elements/fields due to driver.back()
                             movieCinemas = driver.find_element(
-                                By.CLASS_NAME, 'cinemas-body').find_element(By.TAG_NAME, 'ul').find_elements(By.TAG_NAME, 'li')
+                            By.CLASS_NAME, 'cinemas-section'
+                        ).find_element(
+                            By.TAG_NAME, 'ul'
+                        ).find_elements(By.TAG_NAME, 'li')
                             movieCinema = movieCinemas[i]
 
                             movieCinemaElement = movieCinema.find_element(
