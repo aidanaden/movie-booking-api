@@ -447,7 +447,7 @@ def scrapeReviewsForMovie(movieName, driver):
     else:
 
         driver.get(movieUrl)
-        time.sleep(1)
+        driver.implicitly_wait(3)
 
         tomatoData = {}
         # scoreFields = driver.find_element(By.CLASS_NAME, 'scores-container').find_elements(By.XPATH, './div')
