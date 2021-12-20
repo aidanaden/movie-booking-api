@@ -6,6 +6,7 @@ from .models import Movie
 from .serializers import MovieSerializer
 
 from rest_framework.generics import ListAPIView
+from rest_framework.generics import RetrieveAPIView
 
 # Create your views here.
 # @csrf_exempt
@@ -29,5 +30,6 @@ class MovieListAPIView(ListAPIView):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
 
-# class MovieDetail(generics.RetrieveDestroyAPIView):
-#     pass
+class MovieDetailAPIView(RetrieveAPIView):
+    queryset = Movie.objects.all()
+    serializer_class = MovieSerializer
