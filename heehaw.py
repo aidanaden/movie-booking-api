@@ -193,8 +193,9 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                         continue
 
                 cinemas.append({
+                    "theatre": 'gv',
                     "cinema": cinemaName,
-                    "dates": cinemaDates
+                    "timings": cinemaDates
                 })
 
             finally:
@@ -291,8 +292,9 @@ def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                             
                         if len(cinemaTimingList) > 0:
                             movieJSON['cinemas'].append({
-                                'cinema': f'Cathay {cinemaName}',
-                                'dates': cinemaTimingList
+                                'theatre': 'Cathay',
+                                'cinema': f'{cinemaName}',
+                                'timings': cinemaTimingList
                             })
                     else:
                         print('cinema is a platinum VIP suite, skip')
@@ -381,6 +383,7 @@ def scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                         print(f'=== {cinemaName} ===')
 
                         cinemaData = {
+                            'theatre': 'shaw',
                             'cinema': cinemaName,
                             'timings': []
                         }
