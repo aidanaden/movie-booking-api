@@ -309,6 +309,7 @@ def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                             movie['info']['theatres'] = ['cathay']
                 
                 if movieExists == False:
+                    movieJSON['info']['theatres'] = ['cathay']
                     movies.append(movieJSON)
     
     return movies
@@ -410,6 +411,7 @@ def scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                     else:
                         movie['info']['theatres'] = ['shaw']
             if movieExists == False:
+                movieData['info']['theatres'] = ['shaw']
                 movies.append(movieData)
 
     return movies
