@@ -50,9 +50,6 @@ def convertShawDate(date):
     dateTimeObj = datetime.datetime.strptime(capitalDate, '%d %b %Y')
     return dateTimeObj.strftime('%d/%m/%Y')
 
-def convertGVDate(date):
-
-
 def convertGVTiming(timing):
     timeDateTimeObj = datetime.datetime.strptime(timing, '%I:%m %p')
     return timeDateTimeObj.strftime('%I:%m %p')
