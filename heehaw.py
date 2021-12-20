@@ -50,6 +50,9 @@ def convertShawDate(date):
     dateTimeObj = datetime.datetime.strptime(capitalDate, '%d %b %Y')
     return dateTimeObj.strftime('%d/%m/%Y')
 
+def convertGVDate(date):
+
+
 def convertGVTiming(timing):
     timeDateTimeObj = datetime.datetime.strptime(timing, '%I:%m %p')
     return timeDateTimeObj.strftime('%I:%m %p')
@@ -179,9 +182,9 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                             driver.execute_script(
                                 "arguments[0].click();", timingBtn)
                             cinemaUrl = driver.current_url
-
+                            formattedDate = cinemaDate.split()[-1].replace('-', '/')
                             cinemaDateData = {
-                                "timing": f'{cinemaDate.split()[-1]} {convertShawTiming(cinemaTiming)}',
+                                "timing": f'{formattedDate} {convertShawTiming(cinemaTiming)}',
                                 "url": cinemaUrl
                             }
                             print(cinemaDateData)
