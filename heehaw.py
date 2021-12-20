@@ -213,6 +213,7 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                 'reviews': [],
                 'cinemas': cinemas,
             }
+            data['info']['theatres'] = ['gv']
             movies.append(data)
 
         driver.close()
@@ -302,6 +303,10 @@ def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                     if movie['info']['id'] == movieJSON['info']['id']:
                         movieExists = True
                         movie['cinemas'] += movieJSON['cinemas']
+                        if (movie['info']['theatres']):
+                            movie['info']['theatres'].append('cathay')
+                        else:
+                            movie['info']['theatres'] = ['cathay']
                 
                 if movieExists == False:
                     movies.append(movieJSON)
@@ -400,6 +405,10 @@ def scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                 if movie['info']['id'] == movieData['info']['id']:
                     movieExists = True
                     movie['cinemas'] += movieData['cinemas']
+                    if (movie['info']['theatres']):
+                        movie['info']['theatres'].append('shaw')
+                    else:
+                        movie['info']['theatres'] = ['shaw']
             if movieExists == False:
                 movies.append(movieData)
 
