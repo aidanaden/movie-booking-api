@@ -33,3 +33,4 @@ class MovieListAPIView(ListAPIView):
 class MovieDetailAPIView(RetrieveAPIView):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
+    lookup_field = 'id'
