@@ -175,14 +175,25 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                             # get current timing button and URL
                             timingBtn = timingBtnFields[k].find_element(
                                 By.TAG_NAME, 'button')
+
+                            timingStatus = 'AVAILABLE'
+                            timingStatusText = timingBtn.get_attribute('tooltip')
+                            if timingStatusText == 'SELLING FAST':
+                                timingStatus = 'SELLING FAST'
+                            elif timingStatusText == 'SOLD OUT':
+                                timingStatus = 'SOLD OUT'
+                            else:
+                                timingStatus = 'AVAILABLE'
+
                             cinemaTiming = timingBtn.text
                             driver.execute_script(
                                 "arguments[0].click();", timingBtn)
                             cinemaUrl = driver.current_url
                             formattedDate = cinemaDate.split()[-1].replace('-', '/')
                             cinemaDateData = {
-                                "timing": f'{formattedDate} {convertShawTiming(cinemaTiming)}',
-                                "url": cinemaUrl
+                                'timing': f'{formattedDate} {convertShawTiming(cinemaTiming)}',
+                                'status': timingStatus,
+                                'url': cinemaUrl
                             }
                             print(cinemaDateData)
                             cinemaDates.append(cinemaDateData)
@@ -285,6 +296,7 @@ def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                                 if len(timingTitleText) > 0:
                                     timingData = {
                                         'timing': convertCathayTiming(timingTitleText),
+                                        'status': 'AVAILABLE',
                                         'url': timingBookingUrl
                                     }
                                     print(timingData)
@@ -392,8 +404,19 @@ def scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                         for cinemaTimingField in cinemaTimingFields:
                             cinemaTiming = cinemaTimingField.text.replace('+', '').replace('*', '')
                             cinemaTimingUrl = cinemaTimingField.find_element(By.TAG_NAME, 'a').get_attribute('href')
+                            cinemaTimingStatusText = cinemaTimingField.get_attribute('class').split()[-1]
+                            
+                            cinemaTimingStatus = 'AVAILABLE'
+                            if cinemaTimingStatusText == 'showtimes-block-sold-out':
+                                cinemaTimingStatus = 'SOLD OUT'
+                            elif cinemaTimingStatusText == 'showtimes-block-selling-fast':
+                                cinemaTimingStatus = 'SELLING FAST'
+                            else:
+                                cinemaTimingStatus = 'AVAILABLE'
+                            
                             timingData = {
                                 'timing': f'{convertShawDate(cinemaDate)} {convertShawTiming(cinemaTiming)}',
+                                'status': cinemaTimingStatus,
                                 'url': cinemaTimingUrl
                             }
                             print(timingData)
