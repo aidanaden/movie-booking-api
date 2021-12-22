@@ -588,6 +588,8 @@ def scrapeReviewsForMovie(movieName, driver):
 
         return (tomatoData, reviewDatas)
 
+startTime = time.time()
+
 CHROMEDRIVER_PATH = '/home/aidan/chromedriver'
 WINDOW_SIZE = "1920,1080"
 chrome_options = Options()
@@ -628,6 +630,7 @@ for movie in movies:
     Movie.objects.create(data=movie)
 
 print('closing driver...')
+print(f'total scrape time: {time.time() - startTime}')
 driver.quit()
 
 
