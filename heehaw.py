@@ -628,7 +628,8 @@ for movie in movies:
 print('updating database with new movie timing data...')
 Movie.objects.all().delete()
 for movie in movies:
-    Movie.objects.create(data=movie)
+    slug = '_'.join(movie['info']['title'].split(' ')).lower()
+    Movie.objects.create(slug=slug, data=movie)
 
 print('closing driver...')
 print(f'total scrape time: {time.time() - startTime}')

@@ -7,5 +7,5 @@ app_name = 'api'
 
 urlpatterns = [
     path('', MovieListAPIView.as_view(), name='movie_list'),
-    path(r'<int:id>', MovieDetailAPIView.as_view(), name='movie_detail')
+    path(r'<str:slug>', MovieDetailAPIView.as_view(), name='movie_detail')
 ]
