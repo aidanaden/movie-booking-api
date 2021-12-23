@@ -586,7 +586,7 @@ def scrapeReviewsForMovie(movieName, driver):
                 print('review has missing data, skipping...')
                 continue
 
-        return (movieReviewsUrl, tomatoData, reviewDatas)
+        return (movieReviewUrl, tomatoData, reviewDatas)
 
 startTime = time.time()
 
@@ -619,11 +619,11 @@ movies = scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params)
 
 print('creating movie object data...')
 for movie in movies:
-    movieReviewsUrl, tomatoData, reviews = scrapeReviewsForMovie(movie['movie'], driver)
+    movieReviewUrl, tomatoData, reviews = scrapeReviewsForMovie(movie['movie'], driver)
     print(f'reviews for {movie["movie"]}: {reviews}')
     movie['reviews'] = reviews
     movie['info']['tomatoData'] = tomatoData
-    movie['info']['reviewsUrl'] = movieReviewsUrl
+    movie['info']['reviewUrl'] = movieReviewUrl
 
 print('updating database with new movie timing data...')
 Movie.objects.all().delete()
