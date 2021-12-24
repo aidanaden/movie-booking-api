@@ -373,7 +373,7 @@ def scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                 if j >= 3:
                     print('clicking on right click button...')
                     rightClickBtnField.click()
-                    driver.implicity_wait(2)
+                    driver.implicitly_wait(2)
                 
                 cinemaDateField = driver.find_element(By.CLASS_NAME, 'owl-stage').find_element(By.XPATH, f'./div[{j+1}]')
                 cinemaDateFields = cinemaDateField.find_elements(By.TAG_NAME, 'span')
