@@ -373,9 +373,8 @@ def scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                 if j >= 3:
                     print('clicking on right click button...')
                     rightClickBtnField.click()
-                    time.sleep(3)
+                    driver.implicity_wait(2)
                 
-                time.sleep(1)
                 cinemaDateField = driver.find_element(By.CLASS_NAME, 'owl-stage').find_element(By.XPATH, f'./div[{j+1}]')
                 cinemaDateFields = cinemaDateField.find_elements(By.TAG_NAME, 'span')
 
@@ -387,7 +386,7 @@ def scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                 print(f'cinema date selected: {cinemaDate}')
                 # click on date and wait for timings to load
                 cinemaDateField.click()
-                time.sleep(3)
+                driver.implicitly_wait(2)
 
                 cinemaFields = driver.find_element(By.XPATH, "//div[contains(@id, 'moviesDiv')]").find_elements(By.XPATH, './div')
                 for k, cinemaField in enumerate(cinemaFields):
@@ -456,7 +455,7 @@ def scrapeReviewsForMovie(movieName, driver):
     # Switch to the newly opened tab
     # driver.switch_to.window(driver.window_handles[1])
     driver.get(searchQueryUrl)
-    time.sleep(1)
+    driver.implicitly_wait(1)
 
     movieUrl = ''
     try:
@@ -523,7 +522,7 @@ def scrapeReviewsForMovie(movieName, driver):
 
         try:
             driver.get(movieReviewsUrl)
-            time.sleep(2)
+            driver.implicitly_wait(1)
         except WebDriverException:
             error = """
             Message: unknown error: session deleted because of page crash
