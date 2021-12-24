@@ -325,6 +325,9 @@ def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                 if movieExists == False:
                     movieJSON['info']['theatres'] = ['cathay']
                     movies.append(movieJSON)
+
+            driver.close()
+            driver.switch_to.window(driver.window_handles[0])
     
     return movies
 
@@ -596,7 +599,12 @@ chrome_options = Options()
 chrome_options.add_argument("--headless")
 chrome_options.add_argument("--window-size=%s" % WINDOW_SIZE)
 chrome_options.add_argument('--no-sandbox')
-chrome_options.add_argument('--disable-dev-shm-usage')      
+chrome_options.add_argument('--disable-dev-shm-usage')
+chrome_options.add_argument("start-maximized")
+chrome_options.add_argument("disable-infobars")
+chrome_options.add_argument("--disable-extensions")
+chrome_options.add_argument('--disable-application-cache')
+chrome_options.add_argument('--disable-gpu')
 driver = webdriver.Chrome(
     executable_path=CHROMEDRIVER_PATH, chrome_options=chrome_options)
 
@@ -633,6 +641,10 @@ for movie in movies:
 
 print('closing driver...')
 print(f'total scrape time: {time.time() - startTime}')
+for handle in driver.window_handles:
+    driver.switch_to.window(handle)
+    driver.close()
+
 driver.quit()
 
 
