@@ -620,17 +620,17 @@ params = {
 
 movies = []
 
-movies = scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params)
-movies = scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params)
+# movies = scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params)
+# movies = scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params)
 movies = scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params)
 
 print('creating movie object data...')
 for movie in movies:
-    movieReviewUrl, tomatoData, reviews = scrapeReviewsForMovie(movie['movie'], driver)
+    movieReviewsUrl, tomatoData, reviews = scrapeReviewsForMovie(movie['movie'], driver)
     print(f'reviews for {movie["movie"]}: {reviews}')
     movie['reviews'] = reviews
     movie['info']['tomatoData'] = tomatoData
-    movie['info']['reviewUrl'] = movieReviewUrl
+    movie['info']['reviewUrl'] = movieReviewsUrl
 
 print('updating database with new movie timing data...')
 Movie.objects.all().delete()
