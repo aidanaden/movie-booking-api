@@ -478,16 +478,16 @@ def scrapeReviewsForMovie(movieName, driver):
         
         if not verifySearchMovieName(searchResultMovieName, movieName):
             print(f'movie search result {searchResultMovieName} does not contain movie name {movieName}, skipping...')
-            return ({}, [])
+            return ('', {}, [])
 
         print(f'found movie url: {movieUrl}')
     except:
         print('could not find reviews for movie')
-        return ({}, [])
+        return ('', {}, [])
 
     if movieUrl == '':
         print('could not find reviews for movie')
-        return ({}, [])
+        return ('', {}, [])
     else:
 
         tomatoData = {}
@@ -530,7 +530,7 @@ def scrapeReviewsForMovie(movieName, driver):
             from tab crashed
             """
             print(error)
-            return ({}, [])
+            return ('', {}, [])
 
         print(f'review site title: {driver.title}')
         reviewDatas = []
@@ -539,7 +539,7 @@ def scrapeReviewsForMovie(movieName, driver):
             reviewsTableFields = driver.find_element(
                 By.CLASS_NAME, 'review_table').find_elements(By.XPATH, './div')
         except:
-            return ({}, [])
+            return ('', {}, [])
 
         for reviewField in reviewsTableFields:
             reviewData = {
