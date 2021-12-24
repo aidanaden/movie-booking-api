@@ -586,7 +586,7 @@ def scrapeReviewsForMovie(movieName, driver):
                 print('review has missing data, skipping...')
                 continue
 
-        return (movieReviewUrl, tomatoData, reviewDatas)
+        return (movieReviewsUrl, tomatoData, reviewDatas)
 
 startTime = time.time()
 
