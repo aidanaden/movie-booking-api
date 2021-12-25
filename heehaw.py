@@ -108,6 +108,7 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
             movieCinemas = driver.find_element(
                 By.CLASS_NAME, 'cinemas-body').find_element(By.TAG_NAME, 'ul').find_elements(By.TAG_NAME, 'li')
             print(f'new numCinemas: {len(movieCinemas)}')
+            time.sleep(1)
             movieCinema = movieCinemas[i]
 
             movieCinemaElement = movieCinema.find_element(By.TAG_NAME, 'a')
