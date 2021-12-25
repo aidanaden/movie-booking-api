@@ -35,7 +35,7 @@ def getNameFromUrl(url):
 def getMovieFromId(movieId, tmdbUrl, apiKey):
     movieParams = {
         'api_key': apiKey,
-        'append_to_response': 'videos'
+        'append_to_response': 'videos,credits'
     }
     return requests.get(f'{tmdbUrl}/{movieId}', params=movieParams).json()
 
