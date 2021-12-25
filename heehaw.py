@@ -97,7 +97,7 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
         # Switch to the newly opened tab
         driver.switch_to.window(driver.window_handles[1])
         driver.get(movieDetailsUrl)
-        driver.implicitly_wait(1)
+        driver.implicitly_wait(2)
 
         numCinemas = len(driver.find_element(
             By.CLASS_NAME, 'cinemas-body').find_element(By.TAG_NAME, 'ul').find_elements(By.TAG_NAME, 'li'))
@@ -108,7 +108,7 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
             movieCinemas = driver.find_element(
                 By.CLASS_NAME, 'cinemas-body').find_element(By.TAG_NAME, 'ul').find_elements(By.TAG_NAME, 'li')
             print(f'new numCinemas: {len(movieCinemas)}')
-            time.sleep(1)
+            time.sleep(2)
             movieCinema = movieCinemas[i]
 
             movieCinemaElement = movieCinema.find_element(By.TAG_NAME, 'a')
