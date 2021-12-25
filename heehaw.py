@@ -1,5 +1,4 @@
-import enum
-import re, requests, datetime, time
+import re, requests, datetime, time, subprocess
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
@@ -645,7 +644,7 @@ for handle in driver.window_handles:
     driver.close()
 
 driver.quit()
-
+subprocess.run('killall', 'chrome')
 
 
 
