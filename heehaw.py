@@ -386,7 +386,7 @@ def scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                 print(f'cinema date selected: {cinemaDate}')
                 # click on date and wait for timings to load
                 cinemaDateField.click()
-                driver.implicitly_wait(2)
+                time.sleep(2)
 
                 cinemaFields = driver.find_element(By.XPATH, "//div[contains(@id, 'moviesDiv')]").find_elements(By.XPATH, './div')
                 for k, cinemaField in enumerate(cinemaFields):
