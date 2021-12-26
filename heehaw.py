@@ -651,7 +651,7 @@ for handle in driver.window_handles:
     driver.close()
 
 driver.quit()
-subprocess.run('killall', 'chrome')
+subprocess.run(['killall', 'chrome'])
 
 
 
