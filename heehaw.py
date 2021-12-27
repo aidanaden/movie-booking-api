@@ -637,7 +637,7 @@ Movie.objects.all().delete()
 Movie.objects.all().delete()
 time.sleep(1)
 for movie in movies:
-    slug = '_'.join(movie['info']['title'].split(' ')).lower()
+    slug = '-'.join(movie['info']['title'].split(' ')).lower()
     try:
         Movie.objects.create(slug=slug, data=movie)
     except:
