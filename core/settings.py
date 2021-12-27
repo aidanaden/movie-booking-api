@@ -97,6 +97,10 @@ SECURE_BROWSER_XSS_FILTER = True
 
 SECURE_HSTS_SECONDS = 60
 
+SECURE_HSTS_PRELOAD = True
+
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
