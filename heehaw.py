@@ -72,7 +72,6 @@ def convertCathayTiming(timing):
     ogSplit[1] = ':'.join(ogSplit[1].split(':')[:-1])
     convertedTime = convertShawTiming(' '.join(ogSplit[1:]))
     convertedDate = ' '.join([convertCathayDate(ogSplit[0]), convertedTime])
-    print('converted DATE: ', convertedDate)
     return convertedDate
 
 # SCRAPE GV
@@ -626,7 +625,7 @@ params = {
 
 movies = []
 
-# movies = scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params)
+movies = scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params)
 movies = scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params)
 movies = scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params)
 
