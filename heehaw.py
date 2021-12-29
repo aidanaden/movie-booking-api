@@ -67,6 +67,7 @@ def convertCathayTiming(timing):
     ogSplit = timing.split()
     ogSplit[1] = ':'.join(ogSplit[1].split(':')[:-1])
     convertedTime = convertShawTiming(' '.join(ogSplit[1:]))
+    print('converted TIME: ', convertedTime)
     return ' '.join([ogSplit[0], convertedTime])
 
 # SCRAPE GV
