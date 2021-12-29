@@ -44,6 +44,10 @@ def verifySearchMovieName(searchMovieName, movieName):
     cleanedMovieName = pattern.sub('', movieName.lower())
     return cleanedSearchMovieName == cleanedMovieName
 
+# convert 1/1/2022 to 01/01/2022
+def convertCathayDate(date):
+    return '/'.join([f'0{dateSplit}' if len(dateSplit) == 1 else dateSplit for dateSplit in date.split('/')])
+
 def convertShawDate(date):
     capitalDate = date.title()
     dateTimeObj = datetime.datetime.strptime(capitalDate, '%d %b %Y')
@@ -67,7 +71,7 @@ def convertCathayTiming(timing):
     ogSplit = timing.split()
     ogSplit[1] = ':'.join(ogSplit[1].split(':')[:-1])
     convertedTime = convertShawTiming(' '.join(ogSplit[1:]))
-    convertedDate = ' '.join([ogSplit[0], convertedTime])
+    convertedDate = ' '.join([convertCathayDate(ogSplit[0]), convertedTime])
     print('converted DATE: ', convertedDate)
     return convertedDate
 
