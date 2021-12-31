@@ -638,15 +638,21 @@ for movie in movies:
     movie['info']['reviewUrl'] = movieReviewsUrl
 
 print('updating database with new movie timing data...')
+Movie.objects.all().delete()
 for movie in movies:
     slug = '-'.join(movie['info']['title'].split(' ')).lower()
     try:
-        movieObj, created = Movie.objects.update_or_create(slug=slug, defaults={'data': movie})
-        if (created):
-            print('successfully created movie of slug: ', slug)
+        movieObj, created = Movie.objects.get_or_create(slug=slug, defaults={'data': movie})
         
         if (movieObj):
-            print('successfully updated movie of slug: ', slug)
+            print('updating existing movie data')
+            movieObj.delete()
+            Movie.objects.get_or_create(slug=slug, defaults={'data': movie})
+        
+        else:
+            if (created):
+                print('successfully created movie of slug: ', slug)
+
     except:
         print('failed to create/update movie of slug: ', slug)
         continue
