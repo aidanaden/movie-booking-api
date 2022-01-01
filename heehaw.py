@@ -632,7 +632,7 @@ movies = scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params)
 print('creating movie object data...')
 for movie in movies:
     movieReviewsUrl, tomatoData, reviews = scrapeReviewsForMovie(movie['movie'], driver)
-    print(f'reviews for {movie["movie"]}: {reviews}')
+    # print(f'reviews for {movie["movie"]}: {reviews}')
     movie['reviews'] = reviews
     movie['info']['tomatoData'] = tomatoData
     movie['info']['reviewUrl'] = movieReviewsUrl
