@@ -625,7 +625,7 @@ params = {
 
 movies = []
 
-movies = scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params)
+# movies = scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params)
 movies = scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params)
 movies = scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params)
 
@@ -641,21 +641,16 @@ print('updating database with new movie timing data...')
 Movie.objects.all().delete()
 for movie in movies:
     slug = '-'.join(movie['info']['title'].split(' ')).lower()
-    try:
-        movieObj, created = Movie.objects.get_or_create(slug=slug, defaults={'data': movie})
+    movieObj, created = Movie.objects.get_or_create(slug=slug, defaults={'data': movie})
         
-        if (movieObj):
-            print('updating existing movie data')
-            movieObj.delete()
-            Movie.objects.get_or_create(slug=slug, defaults={'data': movie})
+    if (movieObj):
+        print('updating existing movie data')
+        movieObj.delete()
+        Movie.objects.get_or_create(slug=slug, defaults={'data': movie})
         
-        else:
-            if (created):
-                print('successfully created movie of slug: ', slug)
-
-    except:
-        print('failed to create/update movie of slug: ', slug)
-        continue
+    else:
+        if (created):
+            print('successfully created movie of slug: ', slug)
 
 print('closing driver...')
 print(f'total scrape time: {time.time() - startTime}')
