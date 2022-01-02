@@ -646,8 +646,9 @@ for movie in movies:
     if (movieObj):
         print('updating existing movie data')
         movieObj.delete()
-        Movie.objects.get_or_create(slug=slug, defaults={'data': movie})
-        
+        newMovie = Movie.objects.create(slug=slug, data={movie})
+        newMovie.save()
+
     else:
         if (created):
             print('successfully created movie of slug: ', slug)
