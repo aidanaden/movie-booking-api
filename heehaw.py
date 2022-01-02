@@ -646,7 +646,7 @@ for movie in movies:
     if (movieObj):
         print('updating existing movie data')
         movieObj.delete()
-        newMovie = Movie.objects.create(slug=slug, data={movie})
+        newMovie = Movie.objects.create(slug=slug, data=movie)
         newMovie.save()
 
     else:
