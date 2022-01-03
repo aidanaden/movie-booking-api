@@ -95,8 +95,7 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
         titleText = movieField.find_element(By.TAG_NAME, 'h5').text
         cleanedTitleText = cleanTitle(titleText)
         movieDetailsUrl = movieField.find_element(By.TAG_NAME, 'a').get_attribute('href')
-        print(f'\n=== {titleText} === movie number {k+1} of {len(movieFields)}')
-        print(f'{cleanedTitleText}')
+        print(f'movie name: {titleText}')
         # Opens a new tab
         driver.execute_script("window.open()")
         # Switch to the newly opened tab
@@ -106,19 +105,19 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
 
         numCinemas = len(driver.find_element(
             By.CLASS_NAME, 'cinemas-body').find_element(By.TAG_NAME, 'ul').find_elements(By.TAG_NAME, 'li'))
-        print(f'original numCinemas: {numCinemas}')
+        # print(f'original numCinemas: {numCinemas}')
 
         for i in range(numCinemas):
             cinemaDates = []
             movieCinemas = driver.find_element(
                 By.CLASS_NAME, 'cinemas-body').find_element(By.TAG_NAME, 'ul').find_elements(By.TAG_NAME, 'li')
-            print(f'new numCinemas: {len(movieCinemas)}')
+            # print(f'new numCinemas: {len(movieCinemas)}')
             time.sleep(2)
             movieCinema = movieCinemas[i]
 
             movieCinemaElement = movieCinema.find_element(By.TAG_NAME, 'a')
             cinemaName = movieCinemaElement.text
-            print(f'=== {cinemaName} ===')
+            # print(f'=== {cinemaName} ===')
             driver.execute_script('arguments[0].click();', movieCinemaElement)
 
             try:
@@ -200,14 +199,15 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                                 'status': timingStatus,
                                 'url': cinemaUrl
                             }
-                            print(cinemaDateData)
+                            # print(cinemaDateData)
                             cinemaDates.append(cinemaDateData)
 
                             driver.back()
                     except:
                         print('Exception occurred while trying to loop thru timings')
                         continue
-
+                
+                print(f'found {cinemaDates.length} timings for {cinemaName}')
                 cinemas.append({
                     "theatre": 'gv',
                     "cinema": cinemaName,
@@ -223,6 +223,7 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
         if (len(searchResultInfo['results']) > 0):
             movieId = searchResultInfo['results'][0]['id']
             movieInfo = getMovieFromId(movieId, tmdbUrl, params['api_key'])
+            print(f'found movie data: {movieInfo["title"]}')
 
             data = {
                 'movie': movieInfo['title'],
@@ -254,8 +255,8 @@ def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
     for o, movieUrl in enumerate(movieUrls):
         movieName = getNameFromUrl(movieUrl)
         cleanedMovieName = cleanTitle(movieName)
-        print(f'\n=== {movieName} === movie number {o+1} of {len(movieUrls)}')
-        print(f'{cleanedMovieName}')
+        print(f'movie name: {movieName}')
+        # print(f'{cleanedMovieName}')
 
         params['query'] = cleanedMovieName
         searchResultInfo = requests.get(tmdbSearchUrl, params=params).json()
@@ -263,6 +264,7 @@ def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
         if len(searchResultInfo['results']) > 0:
             movieId = searchResultInfo['results'][0]['id']
             movieInfo = getMovieFromId(movieId, tmdbUrl, params['api_key'])
+            print(f'found movie data: {movieInfo["title"]}')
             movieJSON = {
                 'info': movieInfo,
                 'movie': movieInfo['title'],
@@ -287,12 +289,12 @@ def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
             if (len(cinemaSectionFields) > 0):
                 for cinemaSectionField in cinemaSectionFields:
                     cinemaName = cinemaSectionField.find_element(By.XPATH, "./ul").find_element(By.XPATH, "./li[1]").text
-                    print(f'=== {cinemaName} ===')
+                    # print(f'=== {cinemaName} ===')
                     if cinemaSectionField.get_attribute('id') != 'ContentPlaceHolder1_wucSTPMS_tabs':
                         cinemaTimingList = []
                         cinemaTimings = cinemaSectionField.find_elements(By.CLASS_NAME, 'movie-timings')
                         for cinemaTiming in cinemaTimings:
-                            print(f'timing {cinemaTiming.text} found')
+                            # print(f'timing {cinemaTiming.text} found')
                             timingDatas = cinemaTiming.find_elements(By.TAG_NAME, 'a')
                             for timingData in timingDatas:
                                 timingTitleText = timingData.get_attribute('title')
@@ -304,10 +306,11 @@ def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                                         'status': 'AVAILABLE',
                                         'url': timingBookingUrl
                                     }
-                                    print(timingData)
+                                    # print(timingData)
                                     cinemaTimingList.append(timingData)
                             
                         if len(cinemaTimingList) > 0:
+                            print(f'found {cinemaTimingList.length} timings for {cinemaName}')
                             movieJSON['cinemas'].append({
                                 'theatre': 'Cathay',
                                 'cinema': f'{cinemaName}',
@@ -348,7 +351,8 @@ def scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params):
 
     for i, (movieUrl, movieName) in enumerate(zip(movieUrls, movieNames)):
         cleanedMovieName = cleanTitle(movieName)
-        print(f'movie name: {movieName}\ncleaned movie name: {cleanedMovieName}\nmovie url: {movieUrl}\n')
+        # print(f'movie name: {movieName}\ncleaned movie name: {cleanedMovieName}\nmovie url: {movieUrl}\n')
+        print(f'movie name: {movieName}')
 
         params['query'] = cleanedMovieName
         searchResultInfo = requests.get(tmdbSearchUrl, params=params).json()
@@ -362,6 +366,8 @@ def scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                 'info': movieInfo,
                 'cinemas': []
             }
+
+            print(f'found movie data for {movieInfo["title"]}')
 
             driver.get(movieUrl)
             cinemaDatesFields = []
@@ -388,7 +394,7 @@ def scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                 
                 print(f'length of cinema dates: {len(cinemaDateFields)}')
                 cinemaDate = cinemaDateFields[-1].text
-                print(f'cinema date selected: {cinemaDate}')
+                # print(f'cinema date selected: {cinemaDate}')
                 # click on date and wait for timings to load
                 cinemaDateField.click()
                 time.sleep(2)
@@ -399,7 +405,6 @@ def scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                         continue
                     else:
                         cinemaName = cinemaField.find_element(By.XPATH, './div[1]').text
-                        print(f'=== {cinemaName} ===')
 
                         cinemaData = {
                             'theatre': 'shaw',
@@ -426,9 +431,9 @@ def scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                                 'status': cinemaTimingStatus,
                                 'url': cinemaTimingUrl
                             }
-                            print(timingData)
                             cinemaData['timings'].append(timingData)
                     
+                        print(f'found {cinemaData["timings"].length} timings for {cinemaName}')
                         if len(movieData['cinemas']) > k-1:
                             movieData['cinemas'][k-1]['timings'] += cinemaData['timings']
                         else:
@@ -450,12 +455,12 @@ def scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params):
     return movies
 
 def scrapeReviewsForMovie(movieName, driver):
-    print(f'finding reviews for movie: {movieName}')
+    # print(f'finding reviews for movie: {movieName}')
     # create query param of movie name (replace spaces with %20)
     queryMovieName = '%20'.join(movieName.split(' '))
     searchQueryUrl = f"https://www.rottentomatoes.com/search?search={queryMovieName}"
-    print(f'query movie name: {queryMovieName}')
-    print(f'search query url: {searchQueryUrl}')
+    # print(f'query movie name: {queryMovieName}')
+    # print(f'search query url: {searchQueryUrl}')
     # driver.execute_script("window.open()")
     # Switch to the newly opened tab
     # driver.switch_to.window(driver.window_handles[1])
@@ -503,7 +508,7 @@ def scrapeReviewsForMovie(movieName, driver):
             audienceScore = scoreboardElement.get_attribute('audiencescore')
             rating = scoreboardElement.get_attribute('rating')
 
-            print(f'tomatometer: {tomatoScore}, audience: {audienceScore}, rating: {rating}')
+            # print(f'tomatometer: {tomatoScore}, audience: {audienceScore}, rating: {rating}')
 
             tomatoCount = scoreboardElement.find_elements(By.TAG_NAME, 'a')[0].text.split()[0]
             audienceCount = scoreboardElement.find_elements(By.TAG_NAME, 'a')[1].text.split()[0]
@@ -537,7 +542,7 @@ def scrapeReviewsForMovie(movieName, driver):
             print(error)
             return ('', {}, [])
 
-        print(f'review site title: {driver.title}')
+        # print(f'review site title: {driver.title}')
         reviewDatas = []
         reviewsTableFields = []
         try:
@@ -625,7 +630,7 @@ params = {
 
 movies = []
 
-movies = scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params)
+# movies = scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params)
 movies = scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params)
 movies = scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params)
 
@@ -638,20 +643,10 @@ for movie in movies:
     movie['info']['reviewUrl'] = movieReviewsUrl
 
 print('updating database with new movie timing data...')
-Movie.objects.all().delete()
+# Movie.objects.all().delete()
 for movie in movies:
     slug = '-'.join(movie['info']['title'].split(' ')).lower()
-    movieObj, created = Movie.objects.get_or_create(slug=slug, defaults={'data': movie})
-        
-    if (movieObj):
-        print('updating existing movie data')
-        movieObj.delete()
-        newMovie = Movie.objects.create(slug=slug, data=movie)
-        newMovie.save()
-
-    else:
-        if (created):
-            print('successfully created movie of slug: ', slug)
+    movieObj, created = Movie.objects.update_or_create(slug=slug, defaults={'data': movie})
 
 print('closing driver...')
 print(f'total scrape time: {time.time() - startTime}')
