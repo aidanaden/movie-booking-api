@@ -207,7 +207,7 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                         print('Exception occurred while trying to loop thru timings')
                         continue
                 
-                print(f'found {cinemaDates.length} timings for {cinemaName}')
+                print(f'found {len(cinemaDates)} timings for {cinemaName}')
                 cinemas.append({
                     "theatre": 'gv',
                     "cinema": cinemaName,
@@ -310,7 +310,7 @@ def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                                     cinemaTimingList.append(timingData)
                             
                         if len(cinemaTimingList) > 0:
-                            print(f'found {cinemaTimingList.length} timings for {cinemaName}')
+                            print(f'found {len(cinemaTimingList)} timings for {cinemaName}')
                             movieJSON['cinemas'].append({
                                 'theatre': 'Cathay',
                                 'cinema': f'{cinemaName}',
@@ -433,7 +433,7 @@ def scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                             }
                             cinemaData['timings'].append(timingData)
                     
-                        print(f'found {cinemaData["timings"].length} timings for {cinemaName}')
+                        print(f'found {len(cinemaData["timings"])} timings for {cinemaName}')
                         if len(movieData['cinemas']) > k-1:
                             movieData['cinemas'][k-1]['timings'] += cinemaData['timings']
                         else:
@@ -643,7 +643,9 @@ for movie in movies:
     movie['info']['reviewUrl'] = movieReviewsUrl
 
 print('updating database with new movie timing data...')
-# Movie.objects.all().delete()
+Movie.objects.all().delete()
+Movie.objects.all().delete()
+Movie.objects.all().delete()
 for movie in movies:
     slug = '-'.join(movie['info']['title'].split(' ')).lower()
     movieObj, created = Movie.objects.update_or_create(slug=slug, defaults={'data': movie})
