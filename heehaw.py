@@ -648,7 +648,7 @@ Movie.objects.all().delete()
 Movie.objects.all().delete()
 for movie in movies:
     slug = '-'.join(movie['info']['title'].split(' ')).lower()
-    movieObj, created = Movie.objects.update_or_create(slug=slug, defaults={'data': movie})
+    movieObj, created = Movie.objects.create(slug=slug, data=movie)
 
 print('closing driver...')
 print(f'total scrape time: {time.time() - startTime}')
