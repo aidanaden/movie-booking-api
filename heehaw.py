@@ -634,7 +634,6 @@ movies = []
 movies = scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params)
 movies = scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params)
 
-print('creating movie object data...')
 for movie in movies:
     movieReviewsUrl, tomatoData, reviews = scrapeReviewsForMovie(movie['movie'], driver)
     # print(f'reviews for {movie["movie"]}: {reviews}')
@@ -642,13 +641,13 @@ for movie in movies:
     movie['info']['tomatoData'] = tomatoData
     movie['info']['reviewUrl'] = movieReviewsUrl
 
-print('updating database with new movie timing data...')
 Movie.objects.all().delete()
 Movie.objects.all().delete()
 Movie.objects.all().delete()
 for movie in movies:
     slug = '-'.join(movie['info']['title'].split(' ')).lower()
-    movieObj, created = Movie.objects.create(slug=slug, data=movie)
+    movieObj = Movie.objects.create(slug=slug, data=movie)
+    print(f'movie with slug: {movieObj.slug} created')
 
 print('closing driver...')
 print(f'total scrape time: {time.time() - startTime}')
