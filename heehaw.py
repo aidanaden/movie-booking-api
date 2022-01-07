@@ -382,7 +382,7 @@ def scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params):
 
             for j in range(len(cinemaDatesFields)):
                 if j >= 3:
-                    print('clicking on right click button...')
+                    # print('clicking on right click button...')
                     rightClickBtnField.click()
                     time.sleep(1)
                 
@@ -392,7 +392,7 @@ def scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                 if (len(cinemaDateFields) <= 0):
                     continue
                 
-                print(f'length of cinema dates: {len(cinemaDateFields)}')
+                # print(f'length of cinema dates: {len(cinemaDateFields)}')
                 cinemaDate = cinemaDateFields[-1].text
                 # print(f'cinema date selected: {cinemaDate}')
                 # click on date and wait for timings to load
@@ -630,7 +630,7 @@ params = {
 
 movies = []
 
-# movies = scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params)
+movies = scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params)
 movies = scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params)
 movies = scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params)
 
@@ -649,8 +649,10 @@ for movie in movies:
     movieObj = Movie.objects.create(slug=slug, data=movie)
     print(f'movie with slug: {movieObj.slug} created')
 
-print('closing driver...')
+print('starting scrape at: ', startTime)
+print('closing scrape at: ', time.time())
 print(f'total scrape time: {time.time() - startTime}')
+
 for handle in driver.window_handles:
     driver.switch_to.window(handle)
     driver.close()
