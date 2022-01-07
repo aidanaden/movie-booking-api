@@ -659,6 +659,7 @@ for handle in driver.window_handles:
 
 driver.quit()
 subprocess.run(['killall', 'chrome'])
+subprocess.run(['killall', 'chromedriver'])
 
 
 
