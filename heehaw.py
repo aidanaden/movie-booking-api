@@ -646,7 +646,7 @@ Movie.objects.all().delete()
 Movie.objects.all().delete()
 for movie in movies:
     slug = '-'.join(movie['info']['title'].split(' ')).lower()
-    movieObj = Movie.objects.create(slug=slug, data=movie)
+    movieObj = Movie.objects.create(slug=slug, data=movie, force_insert=True)
     print(f'movie with slug: {movieObj.slug} created')
 
 print('starting scrape at: ', startTime)
