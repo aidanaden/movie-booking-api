@@ -590,12 +590,13 @@ def scrapeReviewsForMovie(movieName, driver):
                         'url': reviewUrl
                     }
                     reviewDatas.append(reviewData)
+                    # print('review rating does not exist, skipping...')
                 else:
-                    print('review rating does not exist, skipping...')
+                    # print('review rating does not exist, skipping...')
                     continue
 
             except:
-                print('review has missing data, skipping...')
+                # print('review has missing data, skipping...')
                 continue
 
         return (movieReviewsUrl, tomatoData, reviewDatas)
