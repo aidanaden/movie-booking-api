@@ -601,6 +601,7 @@ def scrapeReviewsForMovie(movieName, driver):
         return (movieReviewsUrl, tomatoData, reviewDatas)
 
 startTime = time.time()
+convertedStartTime = startTime.strftime('%l:%M%p %Z on %b %d, %Y')
 
 CHROMEDRIVER_PATH = '/home/aidan/chromedriver'
 WINDOW_SIZE = "1920,1080"
@@ -654,9 +655,11 @@ for movie in movies:
     else:
         print('data was updated!')
 
-print('starting scrape at: ', startTime)
-print('closing scrape at: ', time.time())
-print(f'total scrape time: {time.time() - startTime}')
+duration = time.time() - startTime
+convertedDuration = duration.strftime('%l:%M%p %Z on %b %d, %Y')
+print('starting scrape at: ', convertedStartTime)
+print('closing scrape at: ', time.strftime('%l:%M%p %Z on %b %d, %Y'))
+print(f'total scrape time: {convertedDuration}')
 
 for handle in driver.window_handles:
     driver.switch_to.window(handle)
