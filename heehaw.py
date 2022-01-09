@@ -652,7 +652,7 @@ Movie.objects.all().delete()
 for movie in movies:
     slug = '-'.join(movie['info']['title'].split(' ')).lower()
     # movieObj = Movie.objects.create(slug=slug, data=movie, force_insert=True)
-    movieObj, created = Movie.objects.update_or_create(slug=slug, data=movie, defaults={'data': movie})
+    movieObj, created = Movie.objects.update_or_create(slug=slug, defaults={'data': movie})
     print(f'movie with slug: {movieObj.slug}')
     if created:
         print('data was created!')
