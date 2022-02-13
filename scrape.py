@@ -654,7 +654,7 @@ Movie.objects.all().delete()
 Movie.objects.all().delete()
 
 for movie in movies:
-    slugCleanedName = sluggifyMovieName(['info']['title'])
+    slugCleanedName = sluggifyMovieName(movie['info']['title'])
     slug = '-'.join(slugCleanedName.split(' ')).lower()
     # movieObj = Movie.objects.create(slug=slug, data=movie, force_insert=True)
     movieObj, created = Movie.objects.update_or_create(slug=slug, defaults={'data': movie})
