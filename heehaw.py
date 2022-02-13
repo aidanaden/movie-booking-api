@@ -606,6 +606,9 @@ def scrapeReviewsForMovie(movieName, driver):
 def convertDateTimeToReadable(dt):
     return dt.strftime("%d/%m/%Y %H:%M:%S")
 
+def sluggifyMovieName(name):
+    return name.replace('/', '_')
+
 startTime = datetime.datetime.now()
 
 CHROMEDRIVER_PATH = '/home/aidan/chromedriver'
@@ -650,8 +653,10 @@ for movie in movies:
 Movie.objects.all().delete()
 Movie.objects.all().delete()
 Movie.objects.all().delete()
+
 for movie in movies:
-    slug = '-'.join(movie['info']['title'].split(' ')).lower()
+    slugCleanedName = sluggifyMovieName(['info']['title'])
+    slug = '-'.join(slugCleanedName.split(' ')).lower()
     # movieObj = Movie.objects.create(slug=slug, data=movie, force_insert=True)
     movieObj, created = Movie.objects.update_or_create(slug=slug, defaults={'data': movie})
     print(f'movie with slug: {movieObj.slug}')
