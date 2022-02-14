@@ -135,7 +135,7 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                     movieCinemaElement = movieCinema.find_element(By.TAG_NAME, 'a')
                     cinemaName = movieCinemaElement.text
                     driver.execute_script('arguments[0].click();', movieCinemaElement)
-                    time.sleep(2)
+                    time.sleep(1)
 
                     # get list of available days for current cinema
                     # and select latest non-visited day
@@ -151,13 +151,16 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                         for k in range(len(timingBtnFields)):
 
                             # RE-find elements/fields due to driver.back()
-                            time.sleep(2)
+                            time.sleep(1)
                             movieCinemas = driver.find_element(
                                 By.CLASS_NAME, 'cinemas-body').find_element(By.TAG_NAME, 'ul').find_elements(By.TAG_NAME, 'li')
                             movieCinema = movieCinemas[i]
 
                             movieCinemaElement = movieCinema.find_element(
                                 By.TAG_NAME, 'a')
+
+                            print(movieCinemaElement.text)
+
                             cinemaName = movieCinemaElement.text
                             driver.execute_script(
                                 'arguments[0].click();', movieCinemaElement)
