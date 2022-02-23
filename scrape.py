@@ -610,7 +610,8 @@ def convertDateTimeToReadable(dt):
     return dt.strftime("%d/%m/%Y %H:%M:%S")
 
 def sluggifyMovieName(name):
-    return name.replace('/', '_')
+    specialCharacterPattern = '[^A-Za-z0-9]+'
+    return re.sub(specialCharacterPattern, '', name)
 
 startTime = datetime.datetime.now()
 
