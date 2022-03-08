@@ -109,12 +109,11 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
 
         for i in range(numCinemas):
             cinemaDates = []
+            time.sleep(2)
             movieCinemas = driver.find_element(
                 By.CLASS_NAME, 'cinemas-body').find_element(By.TAG_NAME, 'ul').find_elements(By.TAG_NAME, 'li')
             # print(f'new numCinemas: {len(movieCinemas)}')
-            time.sleep(2)
             movieCinema = movieCinemas[i]
-
             movieCinemaElement = movieCinema.find_element(By.TAG_NAME, 'a')
             cinemaName = movieCinemaElement.text
             # print(f'=== {cinemaName} ===')
@@ -136,7 +135,7 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                     movieCinemaElement = movieCinema.find_element(By.TAG_NAME, 'a')
                     cinemaName = movieCinemaElement.text
                     driver.execute_script('arguments[0].click();', movieCinemaElement)
-                    time.sleep(2)
+                    time.sleep(1)
 
                     # get list of available days for current cinema
                     # and select latest non-visited day
@@ -152,12 +151,16 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                         for k in range(len(timingBtnFields)):
 
                             # RE-find elements/fields due to driver.back()
+                            time.sleep(1)
                             movieCinemas = driver.find_element(
                                 By.CLASS_NAME, 'cinemas-body').find_element(By.TAG_NAME, 'ul').find_elements(By.TAG_NAME, 'li')
                             movieCinema = movieCinemas[i]
 
                             movieCinemaElement = movieCinema.find_element(
                                 By.TAG_NAME, 'a')
+
+                            print(movieCinemaElement.text)
+
                             cinemaName = movieCinemaElement.text
                             driver.execute_script(
                                 'arguments[0].click();', movieCinemaElement)
@@ -607,7 +610,8 @@ def convertDateTimeToReadable(dt):
     return dt.strftime("%d/%m/%Y %H:%M:%S")
 
 def sluggifyMovieName(name):
-    return name.replace('/', '_')
+    specialCharacterPattern = '[^A-Za-z0-9]+'
+    return re.sub(specialCharacterPattern, '', name)
 
 startTime = datetime.datetime.now()
 
@@ -655,7 +659,7 @@ Movie.objects.all().delete()
 Movie.objects.all().delete()
 
 for movie in movies:
-    slugCleanedName = sluggifyMovieName(['info']['title'])
+    slugCleanedName = sluggifyMovieName(movie['info']['title'])
     slug = '-'.join(slugCleanedName.split(' ')).lower()
     # movieObj = Movie.objects.create(slug=slug, data=movie, force_insert=True)
     movieObj, created = Movie.objects.update_or_create(slug=slug, defaults={'data': movie})
