@@ -77,6 +77,7 @@ def convertCathayTiming(timing):
 # SCRAPE GV
 def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
     driver.get("https://www.gv.com.sg/GVMovies")
+    time.sleep(2)
 
     movieFieldId = 'nowMovieThumb'
     movieFieldId2 = 'nowMovieThumb13'
@@ -246,6 +247,7 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
 # SCRAPE CATHAY 
 def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
     driver.get("https://www.cathaycineplexes.com.sg/movies")
+    time.sleep(2)
 
     moviesContainerClass = 'boxes'
     movieContainerField = WebDriverWait(driver, 5).until(
@@ -346,6 +348,7 @@ def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
 # SCRAPE SHAW
 def scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params):
     driver.get("https://www.shaw.sg/movie")
+    time.sleep(2)
 
     movieFields = driver.find_elements(By.XPATH, "//div[contains(@class, 'info')]")
     movieUrls = [movieField.find_element(By.TAG_NAME, 'a').get_attribute('href') for movieField in movieFields]
@@ -374,6 +377,7 @@ def scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params):
             print(f'found movie data for {movieInfo["title"]}')
 
             driver.get(movieUrl)
+            time.sleep(2)
             cinemaDatesFields = []
             
             try:
@@ -507,6 +511,7 @@ def scrapeReviewsForMovie(movieName, driver):
         tomatoData = {}
         try:
             driver.get(movieUrl)
+            time.sleep(2)
             scoreboardElement = driver.find_element(By.ID, 'topSection').find_element(By.XPATH, './div[1]').find_element(By.TAG_NAME, 'score-board')
             tomatoScore = scoreboardElement.get_attribute('tomatometerscore')
             audienceScore = scoreboardElement.get_attribute('audiencescore')
