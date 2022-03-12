@@ -220,6 +220,7 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
             finally:
                 continue
         
+        print(f'tmdb search query value for {titleText} is {cleanedTitleText}')
         params['query'] = cleanedTitleText
         searchResultInfo = requests.get(tmdbSearchUrl, params=params).json()
 
