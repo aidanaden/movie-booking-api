@@ -160,8 +160,6 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                             movieCinemaElement = movieCinema.find_element(
                                 By.TAG_NAME, 'a')
 
-                            print(movieCinemaElement.text)
-
                             cinemaName = movieCinemaElement.text
                             driver.execute_script(
                                 'arguments[0].click();', movieCinemaElement)
@@ -500,11 +498,11 @@ def scrapeReviewsForMovie(movieName, driver):
 
         print(f'found movie url: {movieUrl}')
     except:
-        print('could not find reviews for movie')
+        print('could not find reviews for ', movieName)
         return ('', {}, [])
 
     if movieUrl == '':
-        print('could not find reviews for movie')
+        print('could not find reviews for ', movieName)
         return ('', {}, [])
     else:
 
