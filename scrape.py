@@ -617,6 +617,11 @@ def sluggifyMovieName(name):
     specialCharacterPattern = '[^A-Za-z0-9]+'
     return re.sub(specialCharacterPattern, '', name)
 
+def runBuildHook():
+    url = "https://api.vercel.com/v1/integrations/deploy/prj_Kc17DSeoKnd7DhnhVkZV9lJhgWKe/7hoqT0ostd"
+    x = requests.post(url)
+    print(x.text)
+
 startTime = datetime.datetime.now()
 
 CHROMEDRIVER_PATH = '/home/aidan/chromedriver'
@@ -677,6 +682,9 @@ completionTime = datetime.datetime.now()
 print('starting scrape at: ', convertDateTimeToReadable(startTime))
 print('closing scrape at: ', convertDateTimeToReadable(completionTime))
 print(f'total scrape time: {completionTime - startTime}')
+
+print("running rebuild hook...")
+runBuildHook()
 
 for handle in driver.window_handles:
     driver.switch_to.window(handle)
