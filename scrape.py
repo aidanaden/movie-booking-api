@@ -16,7 +16,14 @@ def cleanTitle(title):
     first = pattern2.sub('', splitTitlesCleaned)
     second = pattern.sub('', first)
     removeDisney = ' '.join([name if 'disney' not in name else '' for name in second.split()]).strip()
-    return removeDisney
+    removeMultiPartName = handleMultiPartName(removeDisney)
+    return removeMultiPartName
+
+def handleMultiPartName(name):
+    if ':' in name:
+        name_split = name.split(':')
+        return max(name_split, key=len)
+
 
 def getCinemaTimingUrl(cinemaUrl, cinemaTiming):
     format = '%I:%M %p'
