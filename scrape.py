@@ -654,7 +654,7 @@ tmdbApiKey = '863e63572b437caf26335f1d1143e10c'
 params = {
     'api_key': tmdbApiKey,
     'language': 'en-US',
-    'primary_release_year': '2022',
+    'year': '2022',
     'append_to_response': 'videos',
 }
 
