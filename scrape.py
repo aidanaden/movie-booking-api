@@ -23,7 +23,8 @@ def handleMultiPartName(name):
     if ':' in name:
         name_split = name.split(':')
         return max(name_split, key=len)
-
+    else:
+        return name
 
 def getCinemaTimingUrl(cinemaUrl, cinemaTiming):
     format = '%I:%M %p'
