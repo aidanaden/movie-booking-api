@@ -108,7 +108,7 @@ def convertCathayTiming(timing):
     return convertedDate
 
 def addTheatreToMovie(movie, theatre):
-    if (movie['info']['theatres']):
+    if ('theatres' in movie['info']):
         theatreSet = set(movie['info']['theatres'])
         theatreSet.add(theatre)
         movie['info']['theatres'] = list(theatreSet)
