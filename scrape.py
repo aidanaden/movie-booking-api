@@ -286,7 +286,8 @@ def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                             EC.presence_of_element_located((By.CLASS_NAME, moviesContainerClass)))
 
     movieUrlFields = movieContainerField.find_elements(By.TAG_NAME, 'a')
-    movieNames = set([movieNameField.text for movieNameField in movieContainerField.find_elements(By.TAG_NAME, 'h3')])
+    movieNames = [movieNameField.text for movieNameField in movieContainerField.find_elements(By.TAG_NAME, 'h3')]
+    print(movieName)
     movieUrls = set([movieField.get_attribute('href') for movieField in movieUrlFields])
 
     print('scraping cathay...')
