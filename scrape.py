@@ -130,6 +130,7 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
         cleanedTitleText = cleanTitle(titleText)
         movieDetailsUrl = movieField.find_element(By.TAG_NAME, 'a').get_attribute('href')
         print(f'movie name: {titleText}')
+
         # Opens a new tab
         driver.execute_script("window.open()")
         # Switch to the newly opened tab
@@ -279,25 +280,29 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
 # SCRAPE CATHAY 
 def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
     driver.get("https://www.cathaycineplexes.com.sg/movies")
-    time.sleep(2)
+    time.sleep(1)
 
     moviesContainerClass = 'boxes'
     movieContainerFields = WebDriverWait(driver, 5).until(
                             EC.presence_of_all_elements_located((By.CLASS_NAME, moviesContainerClass)))
 
-    movieShowingFields = WebDriverWait(driver, 10).until(
-                            EC.presence_of_all_elements_located((By.CLASS_NAME, 'mix  showing')))
-    movieNameFields = [movieShowingField.find_element(By.TAG_NAME, 'h3') for movieShowingField in movieShowingFields]
-
     movieUrlFields = [movieContainerField.find_element(By.TAG_NAME, 'a') for movieContainerField in movieContainerFields]
-
-    movieNames = [movieNameField.text for movieNameField in movieNameFields]
-    print(movieNames)
     movieUrls = set([movieField.get_attribute('href') for movieField in movieUrlFields])
 
     print('scraping cathay...')
 
-    for movieName, movieUrl in zip(movieNames, movieUrls):
+    for movieUrl in movieUrls:
+
+        driver.execute_script("window.open()")
+        # Switch to the newly opened tab
+        driver.switch_to.window(driver.window_handles[1])
+        driver.get(movieUrl)
+        driver.implicitly_wait(2)
+
+        movieName = driver.title
+        driver.close()
+        driver.switch_to.window(driver.window_handles[0])
+
         cleanedMovieName = cleanTitle(movieName)
         print(f'movie name: {movieName}')
         print(f'movie search query: {cleanedMovieName}')
