@@ -282,11 +282,13 @@ def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
     time.sleep(3)
 
     moviesContainerClass = 'boxgrid captionfull'
-    movieContainerFields = WebDriverWait(driver, 20).until(
+    movieContainerFields = WebDriverWait(driver, 5).until(
                             EC.presence_of_all_elements_located((By.CLASS_NAME, moviesContainerClass)))
 
+    movieNameFields = WebDriverWait(driver, 5).until(
+                            EC.presence_of_all_elements_located((By.TAG_NAME, 'h3')))
+
     movieUrlFields = [movieContainerField.find_element(By.TAG_NAME, 'a') for movieContainerField in movieContainerFields]
-    movieNameFields = [movieContainerField.find_element(By.TAG_NAME, 'h3') for movieContainerField in movieContainerFields]
 
     movieNames = [movieNameField.text for movieNameField in movieNameFields]
     print(movieNames)
