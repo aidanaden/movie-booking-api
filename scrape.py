@@ -353,6 +353,9 @@ def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                 else:
                     print('cinema is a platinum VIP suite, skip')
                     continue
+        else:
+            print('length of cinema section fields is 0! skipping...')
+            continue
 
         searchResultInfo = requests.get(tmdbSearchUrl, params=params).json()
         if len(searchResultInfo['results']) > 0:
