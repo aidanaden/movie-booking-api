@@ -8,16 +8,19 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import WebDriverException
 from api.models import Movie
 
-def cleanTitle(title):
-    splitTitles = title.split()
-    splitTitlesCleaned = ' '.join([split if '’' not in split and "'" not in split else '' for split in splitTitles]).strip()
+def handleApostrophe(name):
+    splitNames = name.split()
+    return ' '.join([split if '’' not in split and "'" not in split else '' for split in splitNames]).strip()
+
+def handleNonAlphaNumeric(name):
     pattern = re.compile("[^a-zA-Z0-9-':\s]+")
     pattern2 = re.compile("[\(\[].*?[\)\]]")
-    first = pattern2.sub('', splitTitlesCleaned)
+    first = pattern2.sub('', name)
     second = pattern.sub('', first)
-    removeDisney = ' '.join([name if 'disney' not in name else '' for name in second.split()]).strip()
-    removeMultiPartName = handleMultiPartName(removeDisney)
-    return removeMultiPartName
+    return second
+
+def handleWords(name, brands):
+    return ' '.join([n if b not in n else '' for n in name.split()] for b in brands).strip()
 
 def handleMultiPartName(name):
     if ':' in name:
@@ -25,6 +28,14 @@ def handleMultiPartName(name):
         return max(name_split, key=len)
     else:
         return name
+
+def cleanTitle(name):
+    wordsToRemove = ['disney', 'atmos', 'gv', 'cathay', 'shaw']
+    removeApostropheName = handleApostrophe(name)
+    removeNonAlphaNumeric = handleNonAlphaNumeric(removeApostropheName)
+    removeDisney = handleWords(removeNonAlphaNumeric, wordsToRemove)
+    removeMultiPartName = handleMultiPartName(removeDisney)
+    return removeMultiPartName
 
 def getCinemaTimingUrl(cinemaUrl, cinemaTiming):
     format = '%I:%M %p'
