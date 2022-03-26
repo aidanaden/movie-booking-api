@@ -107,6 +107,14 @@ def convertCathayTiming(timing):
     convertedDate = ' '.join([convertCathayDate(ogSplit[0]), convertedTime])
     return convertedDate
 
+def addTheatreToMovie(movie, theatre):
+    if (movie['info']['theatres']):
+        theatreSet = set(movie['info']['theatres'])
+        theatreSet.add(theatre)
+        movie['info']['theatres'] = list(theatreSet)
+    else:
+        movie['info']['theatres'] = [theatre]
+
 # SCRAPE GV
 def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
     driver.get("https://www.gv.com.sg/GVMovies")
@@ -269,7 +277,8 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                 'reviews': [],
                 'cinemas': cinemas,
             }
-            data['info']['theatres'] = ['gv']
+
+            addTheatreToMovie(data, 'gv')
             movies.append(data)
 
         driver.close()
@@ -366,15 +375,11 @@ def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
 
                 movieExists = False
                 for movie in movies:
+                    # if movie exists in recorded list of movie data
                     if movie['info']['id'] == movieJSON['info']['id']:
                         movieExists = True
                         movie['cinemas'] += movieJSON['cinemas']
-                        if (movie['info']['theatres']):
-                            theatreSet = set(movie['info']['theatres'])
-                            theatreSet.add('cathay')
-                            movie['info']['theatres'] = list(theatreSet)
-                        else:
-                            movie['info']['theatres'] = ['cathay']
+                        addTheatreToMovie(movie, 'cathay')
                     
                 if movieExists == False:
                     movieJSON['info']['theatres'] = ['cathay']
@@ -497,10 +502,7 @@ def scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                 if movie['info']['id'] == movieData['info']['id']:
                     movieExists = True
                     movie['cinemas'] += movieData['cinemas']
-                    if (movie['info']['theatres']):
-                        movie['info']['theatres'].append('shaw')
-                    else:
-                        movie['info']['theatres'] = ['shaw']
+                    addTheatreToMovie(movie, 'shaw')
             if movieExists == False:
                 movieData['info']['theatres'] = ['shaw']
                 movies.append(movieData)
@@ -698,7 +700,7 @@ params = {
 
 movies = []
 
-# movies = scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params)
+movies = scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params)
 movies = scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params)
 movies = scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params)
 
