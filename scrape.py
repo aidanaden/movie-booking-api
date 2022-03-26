@@ -299,9 +299,9 @@ def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
         driver.get(movieUrl)
         driver.implicitly_wait(1)
 
-        movieName = driver.title
+        movieName = driver.title.lower()
         cleanedMovieName = cleanTitle(movieName)
-        
+
         print(f'movie name: {movieName}')
         print(f'movie search query: {cleanedMovieName}')
 
