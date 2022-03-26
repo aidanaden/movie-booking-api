@@ -287,7 +287,7 @@ def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
 
     movieUrlFields = movieContainerField.find_elements(By.TAG_NAME, 'a')
     movieNames = [movieNameField.text for movieNameField in movieContainerField.find_elements(By.TAG_NAME, 'h3')]
-    print(movieName)
+    print(movieNames)
     movieUrls = set([movieField.get_attribute('href') for movieField in movieUrlFields])
 
     print('scraping cathay...')
