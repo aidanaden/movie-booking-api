@@ -291,7 +291,9 @@ def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
 
     print('scraping cathay...')
 
-    for movieUrl in movieUrls:
+    for o, movieUrl in enumerate(movieUrls):
+        print(f'scraping movie {o} of {len(movieUrls)}')
+
         driver.execute_script("window.open()")
         # Switch to the newly opened tab
         driver.switch_to.window(driver.window_handles[1])
