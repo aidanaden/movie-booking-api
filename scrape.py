@@ -20,7 +20,11 @@ def handleNonAlphaNumeric(name):
     return second
 
 def handleWords(name, brands):
-    return ' '.join([[n if b not in n else '' for n in name.split()] for b in brands]).strip()
+    finalWord = []
+    for n in name.split():
+        for b in brands:
+            if b not in n: finalWord.append(n)
+    return ' '.join(finalWord).strip()
 
 def handleMultiPartName(name):
     if ':' in name:
