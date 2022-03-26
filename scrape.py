@@ -281,7 +281,7 @@ def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
     driver.get("https://www.cathaycineplexes.com.sg/movies")
     time.sleep(3)
 
-    moviesContainerClass = 'boxcontent'
+    moviesContainerClass = 'boxgrid captionfull'
     movieContainerFields = WebDriverWait(driver, 20).until(
                             EC.presence_of_all_elements_located((By.CLASS_NAME, moviesContainerClass)))
 
