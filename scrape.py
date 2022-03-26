@@ -280,10 +280,10 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
 # SCRAPE CATHAY 
 def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
     driver.get("https://www.cathaycineplexes.com.sg/movies")
-    time.sleep(1)
+    time.sleep(3)
 
     moviesContainerClass = 'boxes'
-    movieContainerFields = WebDriverWait(driver, 5).until(
+    movieContainerFields = WebDriverWait(driver, 10).until(
                             EC.presence_of_all_elements_located((By.CLASS_NAME, moviesContainerClass)))
 
     movieUrlFields = [movieContainerField.find_element(By.TAG_NAME, 'a') for movieContainerField in movieContainerFields]
@@ -292,7 +292,7 @@ def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
     print('scraping cathay...')
 
     for o, movieUrl in enumerate(movieUrls):
-        print(f'scraping movie {o} of {len(movieUrls)}')
+        print(f'scraping movie {o+1} of {len(movieUrls)}')
 
         driver.execute_script("window.open()")
         # Switch to the newly opened tab
