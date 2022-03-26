@@ -297,13 +297,11 @@ def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
         # Switch to the newly opened tab
         driver.switch_to.window(driver.window_handles[1])
         driver.get(movieUrl)
-        driver.implicitly_wait(2)
+        driver.implicitly_wait(1)
 
         movieName = driver.title
-        driver.close()
-        driver.switch_to.window(driver.window_handles[0])
-
         cleanedMovieName = cleanTitle(movieName)
+        
         print(f'movie name: {movieName}')
         print(f'movie search query: {cleanedMovieName}')
 
@@ -320,12 +318,6 @@ def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                 'cinemas': [],
                 'reviews': []
             }
-
-            driver.execute_script("window.open()")
-            # Switch to the newly opened tab
-            driver.switch_to.window(driver.window_handles[1])
-            driver.get(movieUrl)
-            driver.implicitly_wait(1)
 
             cinemaSectionFields = []
 
@@ -383,8 +375,8 @@ def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                     movieJSON['info']['theatres'] = ['cathay']
                     movies.append(movieJSON)
 
-            driver.close()
-            driver.switch_to.window(driver.window_handles[0])
+        driver.close()
+        driver.switch_to.window(driver.window_handles[0])
     
     return movies
 
