@@ -370,7 +370,8 @@ def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                         movieExists = True
                         movie['cinemas'] += movieJSON['cinemas']
                         if (movie['info']['theatres']):
-                            movie['info']['theatres'].append('cathay')
+                            threatreSet = set(movie['info']['theatres']).add('cathay')
+                            movie['info']['theatres'] = list(threatreSet)
                         else:
                             movie['info']['theatres'] = ['cathay']
                     
