@@ -43,6 +43,7 @@ def handleMultiPartName(name):
         return name
 
 def cleanTitle(name):
+    print('original title: ', name)
     wordsToRemove = ['disney', 'atmos', 'gv', 'cathay', 'shaw', 'sub', 'dub']
     removeApostropheName = handleApostrophe(name)
     removeNonAlphaNumeric = handleNonAlphaNumeric(removeApostropheName)
