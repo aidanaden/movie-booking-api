@@ -382,6 +382,7 @@ def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
 
         driver.close()
         driver.switch_to.window(driver.window_handles[0])
+        print('driver closed and switched to original tab!')
     
     return movies
 
