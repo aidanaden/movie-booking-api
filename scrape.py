@@ -283,7 +283,7 @@ def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
     time.sleep(3)
 
     moviesContainerClass = 'boxes'
-    movieContainerFields = WebDriverWait(driver, 10).find_elements(By.CLASS_NAME, moviesContainerClass)
+    movieContainerFields = driver.find_elements(By.CLASS_NAME, moviesContainerClass)
 
     movieUrlFields = [movieContainerField.find_element(By.TAG_NAME, 'a') for movieContainerField in movieContainerFields]
     movieUrls = set([movieField.get_attribute('href') for movieField in movieUrlFields])
