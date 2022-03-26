@@ -21,9 +21,18 @@ def handleNonAlphaNumeric(name):
 
 def handleWords(name, brands):
     finalWord = []
+
+    # iterate thru each word in movie
+    # name to remove any word that is
+    # a brand name
     for n in name.split():
+        containsBrand = False
         for b in brands:
-            if b not in n: finalWord.append(n)
+            if b in n:
+                containsBrand = True
+                break
+        if not containsBrand:
+            finalWord.append(n)
     return ' '.join(finalWord).strip()
 
 def handleMultiPartName(name):
