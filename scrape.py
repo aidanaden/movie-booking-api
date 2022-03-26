@@ -285,8 +285,8 @@ def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
     movieContainerFields = WebDriverWait(driver, 5).until(
                             EC.presence_of_all_elements_located((By.CLASS_NAME, moviesContainerClass)))
 
-    movieNameFields = WebDriverWait(driver, 5).until(
-                            EC.presence_of_all_elements_located((By.TAG_NAME, 'h3')))
+    movieNameFields = WebDriverWait(driver, 10).until(
+                            EC.visibility_of_all_elements_located((By.TAG_NAME, 'h3')))
 
     movieUrlFields = [movieContainerField.find_element(By.TAG_NAME, 'a') for movieContainerField in movieContainerFields]
 
