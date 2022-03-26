@@ -353,32 +353,33 @@ def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                 else:
                     print('cinema is a platinum VIP suite, skip')
                     continue
+
+            searchResultInfo = requests.get(tmdbSearchUrl, params=params).json()
+            if len(searchResultInfo['results']) > 0:
+                movieId = searchResultInfo['results'][0]['id']
+                movieInfo = getMovieFromId(movieId, tmdbUrl, params['api_key'])
+                print(f'found movie data: {movieInfo["title"]}')
+
+                movieJSON['info'] = movieInfo
+                movieJSON['movie'] = movieInfo['title']
+
+                movieExists = False
+                for movie in movies:
+                    if movie['info']['id'] == movieJSON['info']['id']:
+                        movieExists = True
+                        movie['cinemas'] += movieJSON['cinemas']
+                        if (movie['info']['theatres']):
+                            movie['info']['theatres'].append('cathay')
+                        else:
+                            movie['info']['theatres'] = ['cathay']
+                    
+                if movieExists == False:
+                    movieJSON['info']['theatres'] = ['cathay']
+                    movies.append(movieJSON)
+
         else:
             print('length of cinema section fields is 0! skipping...')
-            continue
-
-        searchResultInfo = requests.get(tmdbSearchUrl, params=params).json()
-        if len(searchResultInfo['results']) > 0:
-            movieId = searchResultInfo['results'][0]['id']
-            movieInfo = getMovieFromId(movieId, tmdbUrl, params['api_key'])
-            print(f'found movie data: {movieInfo["title"]}')
-
-            movieJSON['info'] = movieInfo
-            movieJSON['movie'] = movieInfo['title']
-
-            movieExists = False
-            for movie in movies:
-                if movie['info']['id'] == movieJSON['info']['id']:
-                    movieExists = True
-                    movie['cinemas'] += movieJSON['cinemas']
-                    if (movie['info']['theatres']):
-                        movie['info']['theatres'].append('cathay')
-                    else:
-                        movie['info']['theatres'] = ['cathay']
-                
-            if movieExists == False:
-                movieJSON['info']['theatres'] = ['cathay']
-                movies.append(movieJSON)
+            pass
 
         driver.close()
         driver.switch_to.window(driver.window_handles[0])
