@@ -28,7 +28,7 @@ def handleWords(name, brands):
     for n in name.split():
         containsBrand = False
         for b in brands:
-            if b in n:
+            if b.lower() in n.lower():
                 containsBrand = True
                 break
         if not containsBrand:
@@ -44,7 +44,23 @@ def handleMultiPartName(name):
 
 def cleanTitle(name):
     print('original title: ', name)
-    wordsToRemove = ['disney', 'atmos', 'gv', 'cathay', 'shaw', 'sub', 'dub', 'pg13', 'r21', 'cineplexes']
+    wordsToRemove = [
+        'disney',
+        'atmos',
+        'gv',
+        'cathay',
+        'shaw',
+        'sub',
+        'dub',
+        'pg13',
+        'r21',
+        'cineplexes',
+        'premium',
+        'oscar',
+        'screening',
+        'priority',
+        'preview'
+    ]
     removeApostropheName = handleApostrophe(name)
     removeNonAlphaNumeric = handleNonAlphaNumeric(removeApostropheName)
     removeDisney = handleWords(removeNonAlphaNumeric, wordsToRemove)
