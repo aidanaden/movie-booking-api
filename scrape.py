@@ -279,28 +279,29 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
 
             finally:
                 continue
+
+        if (cleanedTitleText.strip() != ''):
+            print(f'tmdb search query value for {titleText} is {cleanedTitleText}')
+            params['query'] = cleanedTitleText
+
+            searchResultInfo = requests.get(tmdbSearchUrl, params=params).json()
+            print(f'search query return object: {searchResultInfo}')
+
+            if (cleanedTitleText.strip() != '' & len(searchResultInfo['results']) > 0):
+                movieId = searchResultInfo['results'][0]['id']
+                movieInfo = getMovieFromId(movieId, tmdbUrl, params['api_key'])
+                print(f'found movie data: {movieInfo["title"]}')
+
+                data = {
+                    'movie': movieInfo['title'],
+                    'info': movieInfo,
+                    'reviews': [],
+                    'cinemas': cinemas,
+                }
+
+                addTheatreToMovie(data, 'gv')
+                movies.append(data)
         
-        print(f'tmdb search query value for {titleText} is {cleanedTitleText}')
-        params['query'] = cleanedTitleText
-        searchResultInfo = requests.get(tmdbSearchUrl, params=params).json()
-
-        print(f'search query return object: {searchResultInfo}')
-
-        if (len(searchResultInfo['results']) > 0):
-            movieId = searchResultInfo['results'][0]['id']
-            movieInfo = getMovieFromId(movieId, tmdbUrl, params['api_key'])
-            print(f'found movie data: {movieInfo["title"]}')
-
-            data = {
-                'movie': movieInfo['title'],
-                'info': movieInfo,
-                'reviews': [],
-                'cinemas': cinemas,
-            }
-
-            addTheatreToMovie(data, 'gv')
-            movies.append(data)
-
         driver.close()
         driver.switch_to.window(driver.window_handles[0])
     
