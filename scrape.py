@@ -287,7 +287,7 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
             searchResultInfo = requests.get(tmdbSearchUrl, params=params).json()
             print(f'search query return object: {searchResultInfo}')
 
-            if (cleanedTitleText.strip() != '' & len(searchResultInfo['results']) > 0):
+            if (cleanedTitleText.strip() != '' and len(searchResultInfo['results']) > 0):
                 movieId = searchResultInfo['results'][0]['id']
                 movieInfo = getMovieFromId(movieId, tmdbUrl, params['api_key'])
                 print(f'found movie data: {movieInfo["title"]}')
@@ -301,6 +301,9 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
 
                 addTheatreToMovie(data, 'gv')
                 movies.append(data)
+        
+        else:
+            print('cleaned title is empty, skipping...')
         
         driver.close()
         driver.switch_to.window(driver.window_handles[0])
