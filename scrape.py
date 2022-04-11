@@ -284,6 +284,8 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
         params['query'] = cleanedTitleText
         searchResultInfo = requests.get(tmdbSearchUrl, params=params).json()
 
+        print(f'search query return object: {searchResultInfo}')
+
         if (len(searchResultInfo['results']) > 0):
             movieId = searchResultInfo['results'][0]['id']
             movieInfo = getMovieFromId(movieId, tmdbUrl, params['api_key'])
