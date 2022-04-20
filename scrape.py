@@ -334,7 +334,8 @@ def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
         # Switch to the newly opened tab
         driver.switch_to.window(driver.window_handles[1])
         driver.get(movieUrl)
-        driver.implicitly_wait(2)
+        # driver.implicitly_wait(2)
+        time.sleep(2)
 
         movieName = driver.title.lower()
         cleanedMovieName = cleanTitle(movieName)
