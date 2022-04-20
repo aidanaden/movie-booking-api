@@ -262,7 +262,8 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                                 'status': timingStatus,
                                 'url': cinemaUrl
                             }
-                            # print(cinemaDateData)
+                            print('===GV TIMING===')
+                            print(cinemaDateData)
                             cinemaDates.append(cinemaDateData)
 
                             driver.back()
@@ -374,7 +375,9 @@ def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                                     'status': 'AVAILABLE',
                                     'url': timingBookingUrl
                                 }
-                                # print(timingData)
+
+                                print('===CATHAY TIMING===')
+                                print(timingData)
                                 cinemaTimingList.append(timingData)
                             
                     if len(cinemaTimingList) > 0:
@@ -513,6 +516,10 @@ def scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                                 'status': cinemaTimingStatus,
                                 'url': cinemaTimingUrl
                             }
+                            
+                            print('===SHAW TIMING===')
+                            print(timingData)
+
                             cinemaData['timings'].append(timingData)
                     
                         print(f'found {len(cinemaData["timings"])} timings for {cinemaName}')
