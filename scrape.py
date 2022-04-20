@@ -262,8 +262,8 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                                 'status': timingStatus,
                                 'url': cinemaUrl
                             }
-                            print('===GV TIMING===')
-                            print(cinemaDateData)
+                            # print('===GV TIMING===')
+                            # print(cinemaDateData)
                             cinemaDates.append(cinemaDateData)
                             print('cinema dates found so far: ', len(cinemaDates))
 
@@ -273,7 +273,7 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                         continue
                 
                 print(f'adding {len(cinemaDates)} timings for {cinemaName}')
-                print('cinema dates to be added: ', cinemaDates)
+                # print('cinema dates to be added: ', cinemaDates)
                 cinemas.append({
                     "theatre": 'gv',
                     "cinema": cinemaName,
@@ -381,8 +381,8 @@ def scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                                     'url': timingBookingUrl
                                 }
 
-                                print('===CATHAY TIMING===')
-                                print(timingData)
+                                # print('===CATHAY TIMING===')
+                                # print(timingData)
                                 cinemaTimingList.append(timingData)
                             
                     if len(cinemaTimingList) > 0:
@@ -522,8 +522,8 @@ def scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                                 'url': cinemaTimingUrl
                             }
                             
-                            print('===SHAW TIMING===')
-                            print(timingData)
+                            # print('===SHAW TIMING===')
+                            # print(timingData)
 
                             cinemaData['timings'].append(timingData)
                     
