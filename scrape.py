@@ -265,6 +265,7 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                             print('===GV TIMING===')
                             print(cinemaDateData)
                             cinemaDates.append(cinemaDateData)
+                            print('cinema dates found: ', len(cinemaDateData))
 
                             driver.back()
                     except:
@@ -286,7 +287,7 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
             params['query'] = cleanedTitleText
 
             searchResultInfo = requests.get(tmdbSearchUrl, params=params).json()
-            print(f'search query return object: {searchResultInfo}')
+            # print(f'search query return object: {searchResultInfo}')
 
             if (cleanedTitleText.strip() != '' and len(searchResultInfo['results']) > 0):
                 movieId = searchResultInfo['results'][0]['id']
@@ -299,6 +300,8 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                     'reviews': [],
                     'cinemas': cinemas,
                 }
+
+                print('cinema data to be added: ', cinemas)
 
                 addTheatreToMovie(data, 'gv')
                 movies.append(data)
