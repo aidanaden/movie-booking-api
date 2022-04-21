@@ -737,8 +737,8 @@ params = {
 movies = []
 
 movies = scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params)
-movies = scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params)
-movies = scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params)
+# movies = scrapeCathay(driver, movies, tmdbUrl, tmdbSearchUrl, params)
+# movies = scrapeShaw(driver, movies, tmdbUrl, tmdbSearchUrl, params)
 
 for movie in movies:
     movieReviewsUrl, tomatoData, reviews = scrapeReviewsForMovie(movie['movie'], driver)
