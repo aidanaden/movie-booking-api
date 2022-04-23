@@ -755,7 +755,7 @@ for movie in movies:
     # movieObj = Movie.objects.create(slug=slug, data=movie, force_insert=True)
     movieObj, created = Movie.objects.update_or_create(slug=slug, defaults={'data': movie})
     print(f'movie with slug: {movieObj.slug}')
-    print(f'movie cinema data: {movieObj.cinemas}')
+    print(f'movie cinema data: {movieObj.data}')
     if created:
         print('data was created!')
     else:
