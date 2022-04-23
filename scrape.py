@@ -302,7 +302,7 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                     'cinemas': cinemas,
                 }
 
-                print('cinema data to be added: ', cinemas)
+                # print('cinema data to be added: ', cinemas)
 
                 addTheatreToMovie(data, 'gv')
                 movies.append(data)
@@ -748,8 +748,6 @@ for movie in movies:
     movie['info']['reviewUrl'] = movieReviewsUrl
 
 Movie.objects.all().delete()
-Movie.objects.all().delete()
-Movie.objects.all().delete()
 
 for movie in movies:
     slugCleanedName = sluggifyMovieName(movie['info']['title'])
@@ -757,6 +755,7 @@ for movie in movies:
     # movieObj = Movie.objects.create(slug=slug, data=movie, force_insert=True)
     movieObj, created = Movie.objects.update_or_create(slug=slug, defaults={'data': movie})
     print(f'movie with slug: {movieObj.slug}')
+    print(f'movie cinema data: {movieObj.cinemas}')
     if created:
         print('data was created!')
     else:
