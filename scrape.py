@@ -131,6 +131,17 @@ def addTheatreToMovie(movie, theatre):
     else:
         movie['info']['theatres'] = [theatre]
 
+def addMovieToMovie(movieData, movies, theatre):
+    movieExists = False
+    for movie in movies:
+        if movie['info']['id'] == movieData['info']['id']:
+            movieExists = True
+            movie['cinemas'] += movieData['cinemas']
+            addTheatreToMovie(movie, theatre)
+    if movieExists == False:
+        movieData['info']['theatres'] = [theatre]
+        movies.append(movieData)
+
 # SCRAPE GV
 def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
     driver.get("https://www.gv.com.sg/GVMovies")
@@ -295,6 +306,8 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                 movieInfo = getMovieFromId(movieId, tmdbUrl, params['api_key'])
                 print(f'found movie data: {movieInfo["title"]}')
 
+                
+
                 data = {
                     'movie': movieInfo['title'],
                     'info': movieInfo,
@@ -303,9 +316,9 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                 }
 
                 # print('cinema data to be added: ', cinemas)
-
-                addTheatreToMovie(data, 'gv')
-                movies.append(data)
+                
+                # check if current movie exists
+                addMovieToMovie(data, movies, 'gv')
         
         else:
             print('cleaned title is empty, skipping...')
