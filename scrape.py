@@ -283,7 +283,7 @@ def scrapeGV(driver, movies, tmdbUrl, tmdbSearchUrl, params):
                         print('Exception occurred while trying to loop thru timings')
                         continue
                 
-                # print(f'adding {len(cinemaDates)} timings for {cinemaName}')
+                print(f'adding {len(cinemaDates)} timings for {cinemaName}')
                 # print('cinema dates to be added: ', cinemaDates)
                 cinemas.append({
                     "theatre": 'gv',
